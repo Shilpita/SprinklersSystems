@@ -26,25 +26,35 @@ import project.backend.pkg.WaterFlow;
  *
  */
 
-public class InsertToSchedule {
-//	private static String scheduleName ;
-//	private static String startDate;
-//	private static String endDate;
-//	private static String sprinkler;
-//	private String group;
-//	private String waterflow;
-//	private static String startHrTime ;
-//	private static String startMinTime;
-//	private static String endHrTime;
-//	private static String endMinTime;
+public class InsertToSchedule_ {
+	private static String scheduleName ;
+	private static String startDate;
+	private static String endDate;
+	private static String sprinkler;
+	private String group;
+	private String waterflow;
+	private static String startHrTime ;
+	private static String startMinTime;
+	private static String endHrTime;
+	private static String endMinTime;
 	private static  InsertToDB insertDBCon ;
 	private static Connection con ;
 	private PreparedStatement preparedStatement ;
 	private String insertStmt ;
 	private static int count =0;
 	
-	public InsertToSchedule(){
-
+	public InsertToSchedule_(){
+		//Comment Later
+		scheduleName = "Test1";
+		startDate="12/1/2009";
+		endDate ="12/10/2009";
+		sprinkler ="1N";
+		group = "North";
+		waterflow ="LOW";
+		startHrTime ="10" ;
+	    startMinTime ="30";
+	    endHrTime="14";
+	    endMinTime="30";
 	}
 	
 	private static String getTimeString(String hr , String min){
@@ -104,27 +114,27 @@ public class InsertToSchedule {
 		
 		
 }
-    public void processInsertSchedQuery(String scheduleName , String sprinkler,String startDate, String endDate
-    		,String startHrTime, String startMinTime, String endHrTime, String endMinTime ){
-				InsertToSchedule sched = new InsertToSchedule();
-				String startTime = getTimeString(startHrTime,startMinTime);
-				String endTime =getTimeString(endHrTime,endMinTime);
-				Long totalTime = getTotalTime(startTime,endTime);
-				try {
-					insertDBCon     = new InsertToDB();
-					con             = insertDBCon.openConnection();
-					sched.insertScheduleRow(con, scheduleName, sprinkler, startDate, endDate, startTime, endTime, totalTime);
-				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}finally {
-					if (con != null)
-						   insertDBCon.closeConnection(con);
-				}
-				
+
+	public static void main(String[] args) { 
+		InsertToSchedule_ sched = new InsertToSchedule_();
+		String startTime = getTimeString(startHrTime,startMinTime);
+		String endTime =getTimeString(endHrTime,endMinTime);
+		Long totalTime = getTotalTime(startTime,endTime);
+		try {
+			insertDBCon     = new InsertToDB();
+			con             = insertDBCon.openConnection();
+			sched.insertScheduleRow(con, scheduleName, sprinkler, startDate, endDate, startTime, endTime, totalTime);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			if (con != null)
+				   insertDBCon.closeConnection(con);
+		}
+		
 	}
 	
 

@@ -1,6 +1,7 @@
 package project.UI.pkg;
 
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.sql.Time;
 import java.util.ArrayList;
 
@@ -8,6 +9,7 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 
 public class ConfigureSchedule {
 
@@ -105,6 +107,9 @@ public class ConfigureSchedule {
 		panel2.add(sprinklerID);
 		sprinklerInput = new JTextField(10);
 		panel2.add(sprinklerInput);
+		JLabel label = new JLabel("(press enter after each sprinkler entry)");
+		label.setFont(new Font("TIMES ROMAN",Font.PLAIN,10));
+		panel2.add(label);
 		panelSchedule.add(panel2);
 		
 		panel.add(panelSchedule);
@@ -115,14 +120,14 @@ public class ConfigureSchedule {
 		startDateField= new JTextField(10); 
 		endDateLabel = new JLabel("Enter End Date :");
 		endDateField= new JTextField(10); 
-		startHrLabel = new JLabel("Enter Start Hour :"); 
-		startHrField= new JTextField(5);
-		endHrLabel  = new JLabel("Enter End Hour :");
-		endHrField = new JTextField(5);
-		startMinLabel = new JLabel("Enter Start Min :"); 
-		startMinField= new JTextField(5);
-		endMinLabel  = new JLabel("Enter End Min :");
-		endMinField = new JTextField(5);
+		startHrLabel = new JLabel("Enter Start Time Hrs:"); 
+		startHrField= new JTextField(2);
+		endHrLabel  = new JLabel("Enter End Time Hrs:");
+		endHrField = new JTextField(2);
+		startMinLabel = new JLabel("min:"); 
+		startMinField= new JTextField(2);
+		endMinLabel  = new JLabel("min:");
+		endMinField = new JTextField(2);
 		panelTimeDay.add(startDateLabel);
 		panelTimeDay.add(startDateField);
 		panelTimeDay.add(endDateLabel);
