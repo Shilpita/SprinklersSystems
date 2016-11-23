@@ -16,14 +16,14 @@ public class ConfigureSchedule {
 	private JRadioButton groupRdBtn ,sprinklerRdBtn ,selectedSprinklerRdBtn ;
 	private JRadioButton low , medium, high;
 	private ButtonGroup sprinklerSelectionGrp,waterFlowGrp;
-	private JTextField scheduleNameField, dayField, startTimeField,endTimeField;
+	private JTextField scheduleNameField, startDateField,endDateField, startHrField,endHrField, startMinField,endMinField;
 	private JTextField sprinklerInput ,scheduleInput ;
-	private JLabel scheduleID, sprinklerID , dayLabel, startTimeLabel ,endTimeLabel ;
+	private JLabel scheduleID, sprinklerID , startDateLabel,endDateLabel ,startHrLabel ,endHrLabel,startMinLabel ,endMinLabel ;
 	private JButton submit;
 	
 	//data member
-	private String scheduleName, day , sprinkler , group , waterflow ;
-	private Time startTime, endTime;
+	private String scheduleName, startDate,endDate , sprinkler , group , waterflow ;
+	private String startHrTime,startMinTime, endHrTime,endMinTime ;
 	private ArrayList<String> sprinklerList;
 	
 	
@@ -111,23 +111,35 @@ public class ConfigureSchedule {
 		
 		panelTimeDay = new JPanel();
 		panelTimeDay.setBorder(new TitledBorder("Day and Time setting"));
-		dayLabel = new JLabel("Enter Day :");
-		dayField= new JTextField(10); 
-		startTimeLabel = new JLabel("Enter Start Time :"); 
-		startTimeField= new JTextField(10);
-		endTimeLabel  = new JLabel("Enter End Time :");
-		endTimeField = new JTextField(10);
-		panelTimeDay.add(dayLabel);
-		panelTimeDay.add(dayField);
-		panelTimeDay.add(startTimeLabel);
-		panelTimeDay.add(startTimeField);
-		panelTimeDay.add(endTimeLabel);
-		panelTimeDay.add(endTimeField);
+		startDateLabel = new JLabel("Enter Start Date :");
+		startDateField= new JTextField(10); 
+		endDateLabel = new JLabel("Enter End Date :");
+		endDateField= new JTextField(10); 
+		startHrLabel = new JLabel("Enter Start Hour :"); 
+		startHrField= new JTextField(5);
+		endHrLabel  = new JLabel("Enter End Hour :");
+		endHrField = new JTextField(5);
+		startMinLabel = new JLabel("Enter Start Min :"); 
+		startMinField= new JTextField(5);
+		endMinLabel  = new JLabel("Enter End Min :");
+		endMinField = new JTextField(5);
+		panelTimeDay.add(startDateLabel);
+		panelTimeDay.add(startDateField);
+		panelTimeDay.add(endDateLabel);
+		panelTimeDay.add(endDateField);
+		panelTimeDay.add(startHrLabel);
+		panelTimeDay.add(startHrField);
+		panelTimeDay.add(startMinLabel);
+		panelTimeDay.add(startMinField);
+		panelTimeDay.add(endHrLabel);
+		panelTimeDay.add(endHrField);
+		panelTimeDay.add(endMinLabel);
+		panelTimeDay.add(endMinField);
 		
 		panel.add(panelTimeDay);
 		
 		panelWaterFlow = new JPanel();
-		panelWaterFlow.setBorder(new TitledBorder("Day and Time setting"));
+		panelWaterFlow.setBorder(new TitledBorder("Waterflow setting"));
 		low = new JRadioButton("Low Waterflow");
 		medium = new JRadioButton("Medium Waterflow");
 		high = new JRadioButton("High Waterflow");

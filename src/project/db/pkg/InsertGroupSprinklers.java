@@ -19,7 +19,7 @@ public class InsertGroupSprinklers {
 	
 	public void insertGroup(String[] tokens){
 			try {
-					insertStmt              = "INSERT INTO YELP_USER VALUES(?,?,?,?,?)" ;
+					insertStmt              = "INSERT INTO SPRINKLER_GROUP VALUES(?,?,?,?,?)" ;
 			
 					preparedStatement       = con.prepareStatement(insertStmt);
 					preparedStatement.setString(1, tokens[0]);
