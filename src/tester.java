@@ -1,59 +1,62 @@
-import java.sql.Time;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
+import java.sql.*;
+import java.text.*;
+import java.util.*;
+import java.util.Map.Entry;
 
-public class tester {
+import project.backend.pkg.Sprinkler;
+import project.db.pkg.InsertToDB;
+import project.db.pkg.InsertToSchedule;
+import project.db.pkg.QueryDB;
 
-	public static void main(String[] args) throws ParseException {
-		java.util.Date myDate = new java.util.Date();
-		SimpleDateFormat format = new SimpleDateFormat( "MM/dd/yyyy" );  // United States style of format.
-		myDate = format.parse( "12/10/2009" );
+public class Tester {
+		private static  InsertToDB insertDBCon ;
+		private static Connection con ;
+		private static ArrayList<Sprinkler> activeSprinklerList ;
+		public Tester(){
+			activeSprinklerList = new ArrayList<Sprinkler>();
+		}
 		
-		java.sql.Date sqlDate = new java.sql.Date( myDate.getTime() );
-		System.out.println(myDate.getTime()+ "  "+myDate+ "  "+sqlDate);
+        public static void insertScheduleForGroup(Connection con,QueryDB query,String group){
 		
-        
-        SimpleDateFormat simpleDateformat = new SimpleDateFormat("E"); // the day of the week abbreviated
-        System.out.println(simpleDateformat.format(myDate));
- 
-        simpleDateformat = new SimpleDateFormat("EEEE"); // the day of the week spelled out completely
-        System.out.println(simpleDateformat.format(myDate));
- 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(myDate);
-        System.out.println(calendar.get(Calendar.DAY_OF_WEEK)); // the day of the week in numerical format
-        
-        Time t = new Time(9, 11, 34);
-        System.out.println(t);
-        
-        String myTime = "10:30";
-        String nexTime ="13:30";
-        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
-        Date date = null;
-        Date date1 = null;
-        try {
-            date = sdf.parse(myTime);
-            date1 = sdf.parse(nexTime);
-            
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        String formattedTime = sdf.format(date);
-        String formattedTime1 = sdf.format(date1);
-        System.out.println(Integer.parseInt(formattedTime.replace(":", ""))- Integer.parseInt(formattedTime1.replace(":", "")));
-        System.out.println(date + formattedTime);
-        System.out.println(date1 +formattedTime1);
-        System.out.println(getDateDiff(date,date1));
-        
-	}
+			       InsertToSchedule insertSchedule = new InsertToSchedule();
+			       ArrayList<String> sprinkler	   = query.getAllSprinklers(con ,group);
+
+			       // Display elements and insert schedule per sprinkler in group 
+					for(String i : sprinkler) {
+								System.out.println(i);
+					           //insert schedule in Db
+					           insertSchedule.processInsertSchedQuery(con,"Test5" , i ,group ,"LOW"
+								   									 ,"11/1/2016", "11/30/2016"
+								   									 ,"21", "30"
+								   									 ,"23", "30" );
+					}
+       }//end insert schedule method
+	    
+ 	    
+       	public static void main(String[] args) throws ParseException {
+		
+				try {
+						insertDBCon     	 = new InsertToDB();
+						con  				 = insertDBCon.openConnection();
+						QueryDB query 		 = new QueryDB();	
+						
+					  //  insertScheduleForGroup(con ,query,"North"); //Insert schedule for group
+					 	activeSprinklerList = query.getActiveScheduleSprinklerGroup(con, "North", "11/23/2016", "22:50");
+						System.out.println(activeSprinklerList.toString());
+						
+				} catch (ClassNotFoundException e) {
+						e.printStackTrace();
+				} catch (SQLException e) {
+						e.printStackTrace();
+				}finally {
+					if (con != null)
+						   insertDBCon.closeConnection(con);
+			    }
+
+       	}//end main()
 	
-    public static long getDateDiff(Date date1, Date date2) {
-    	TimeUnit timeUnit = TimeUnit.HOURS;
-        long diffInMillies = date2.getTime() - date1.getTime();
-        return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
-    }
+       	
+}//end class
 
-}
+
+

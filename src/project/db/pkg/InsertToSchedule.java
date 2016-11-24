@@ -1,5 +1,9 @@
 package project.db.pkg;
 
+/***
+ * The Class Inserts the new schedule for sprinkler in DB
+ */
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -15,42 +19,49 @@ import project.backend.pkg.WaterFlow;
 /***
  * 
  * @author shilpita_roy
- *     String scheduleID VARCHAR2(10)
-      String sprinklerID VARCHAR2(5)
-      scheduleDate Date
-      ,startTime TIMESTAMP 
-      ,endTime TIMESTAMP
-      ,totalHours NUMBER
-      
-      INSERT INTO SPRINKLER_SCHEDULE VALUES (?,?,?,?,?,?,?)
- *
- */
+ **/
 
 public class InsertToSchedule {
-//	private static String scheduleName ;
-//	private static String startDate;
-//	private static String endDate;
-//	private static String sprinkler;
-//	private String group;
-//	private String waterflow;
-//	private static String startHrTime ;
-//	private static String startMinTime;
-//	private static String endHrTime;
-//	private static String endMinTime;
-	private static  InsertToDB insertDBCon ;
+
 	private static Connection con ;
 	private PreparedStatement preparedStatement ;
 	private String insertStmt ;
-	private static int count =0;
+	private String[] monthList = {"JAN"
+								,"FEB"
+								,"MAR"
+								,"APR"
+								,"MAY"
+								,"JUN"
+								,"JUL"
+								,"AUG"
+								,"SEP"
+								,"OCT"
+								,"NOV"
+								,"DEC"};
 	
+ // private static int count =0;
+	/**
+	 * Default Constructor 
+	 */
 	public InsertToSchedule(){
-
+			this.insertStmt = null;
 	}
 	
-	private static String getTimeString(String hr , String min){
+	/**
+	 * Function returns time in string Hr:min eg(12:20)
+	 * @param hr
+	 * @param min
+	 * @return String Hr:min
+	 */
+	private String getTimeString(String hr , String min){
 		return hr+":"+min;
 	}
 	
+	/**
+	 * Function returns date in sql date MM/dd/yyyy eg:12/20/2009 => 20-DEC-09.
+	 * @param mydate
+	 * @return  date in sql data format MM/dd/yyyy.
+	 */
 	private java.sql.Date getFormatedDate(String mydate){
 		java.util.Date myDate = new java.util.Date();
 		SimpleDateFormat format = new SimpleDateFormat( "MM/dd/yyyy" );  // United States style of format.
@@ -64,68 +75,130 @@ public class InsertToSchedule {
 		return sqlDate;
 	}
 	
-	private static long getTotalTime(String starttime, String endtime) {
-		 	SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+	/**
+	 * Function to get the total hours (or days) between two times (or days) in String.
+	 * @param starttime
+	 * @param endtime
+	 * @param timeUnit  HOURS OR DAYS
+	 * @param sdf  eg MM/dd/yyyy  or Hr:mm
+	 * @return totalHours
+	 */
+	
+	private long getTotalTime(String starttime, String endtime,TimeUnit timeUnit,SimpleDateFormat sdf) {
 	        Date date = null;
 	        Date date1 = null;
-	        TimeUnit timeUnit = TimeUnit.HOURS;
 	        try {
-	            date = sdf.parse(starttime);
-	            date1 = sdf.parse(endtime);            
+		            date = sdf.parse(starttime);
+		            date1 = sdf.parse(endtime);            
 	        } catch (ParseException e) {
-	            e.printStackTrace();
+	        		e.printStackTrace();
 	        }
 	        long diffInMillies = date1.getTime() - date.getTime();
 	        return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
 	}
 	
-	public void insertScheduleRow(Connection con ,String scheduleName, String sprinkler ,String startDate ,String endDate 
-			,String startTime,String endTime, long totalTime){
-		try {
-				insertStmt              = "INSERT INTO SPRINKLER_SCHEDULE VALUES (?,?,?,?,?,?,?,?)" ;
-				
-				preparedStatement       = con.prepareStatement(insertStmt);
-				preparedStatement.setInt(1, ++count);
-				preparedStatement.setString(2, scheduleName);
-				preparedStatement.setString(3, sprinkler);
-				preparedStatement.setDate(4, getFormatedDate(startDate));
-				preparedStatement.setDate(5, getFormatedDate(endDate));
-				preparedStatement.setString(6,startTime );
-				preparedStatement.setString(7, endTime);
-				preparedStatement.setLong(8, totalTime);
-				
-				preparedStatement.executeUpdate();
-				preparedStatement.close();
-				
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 	
+	/**
+	 * Function gets the total water consumption for complete schedule based on water flow
+	 * @param waterFlow
+	 * @param totalHrs
+	 * @param totalDays
+	 * @return total water consumption for schedule
+	 */
+	private long getTotalWaterConsumption(String waterFlow, long totalHrs , long totalDays){
+			int waterPerhr = WaterFlow.valueOf(waterFlow.toUpperCase()).calFlowPerHr();
+			return (waterPerhr * totalHrs * totalDays);
+	}
+	/**
+	 * Prepare query to insert schedule row in DB
+	 * @param con
+	 * @param scheduleName
+	 * @param sprinkler
+	 * @param group
+	 * @param startDate
+	 * @param endDate
+	 * @param month
+	 * @param startTime
+	 * @param endTime
+	 * @param totalTime
+	 * @param totalDays
+	 * @param totalWaterConsumption
+	 * @param waterFlow
+	 */
+	
+	public void insertScheduleRow(Connection con ,String scheduleName , String sprinkler,String group 
+								 , String startDate ,String endDate ,String month
+								 , String startTime,String endTime
+								 , long totalTime,long totalDays
+								 , long totalWaterConsumption, String waterFlow)
+	{
+							try {
+									insertStmt              = "INSERT INTO SPRINKLER_SCHEDULE VALUES (?,?,?,?,?,?,?,?,?,?,?,?)" ;
+									
+									preparedStatement       = con.prepareStatement(insertStmt);
+									
+									preparedStatement.setString(1, scheduleName);
+									preparedStatement.setString(2, sprinkler);
+									preparedStatement.setString(3, group);
+									preparedStatement.setDate(4, getFormatedDate(startDate));
+									preparedStatement.setDate(5, getFormatedDate(endDate));
+									preparedStatement.setString(6,month);
+									preparedStatement.setString(7,startTime );
+									preparedStatement.setString(8, endTime);
+									preparedStatement.setLong(9, totalTime);
+									preparedStatement.setLong(10, totalDays);
+									preparedStatement.setString(11, waterFlow);
+									preparedStatement.setLong(12, totalWaterConsumption);
+									
+									preparedStatement.executeUpdate();
+									preparedStatement.close();
+									
+							} catch (SQLException e) {
+									e.printStackTrace();
+							} 	
 		
-		
-}
-    public void processInsertSchedQuery(String scheduleName , String sprinkler,String startDate, String endDate
-    		,String startHrTime, String startMinTime, String endHrTime, String endMinTime ){
-				InsertToSchedule sched = new InsertToSchedule();
-				String startTime = getTimeString(startHrTime,startMinTime);
-				String endTime =getTimeString(endHrTime,endMinTime);
-				Long totalTime = getTotalTime(startTime,endTime);
-				try {
-					insertDBCon     = new InsertToDB();
-					con             = insertDBCon.openConnection();
-					sched.insertScheduleRow(con, scheduleName, sprinkler, startDate, endDate, startTime, endTime, totalTime);
-				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}finally {
-					if (con != null)
-						   insertDBCon.closeConnection(con);
-				}
-				
 	}
 	
+	/**
+	 * Insert the Schedule row for each sprinkler in DB
+	 * @param con
+	 * @param scheduleName
+	 * @param sprinkler
+	 * @param group
+	 * @param waterflow
+	 * @param startDate
+	 * @param endDate
+	 * @param startHrTime
+	 * @param startMinTime
+	 * @param endHrTime
+	 * @param endMinTime
+	 */
+	
+    public void processInsertSchedQuery(Connection con,String scheduleName , String sprinkler, String group,String waterflow
+    									,String startDate, String endDate 
+    									,String startHrTime, String startMinTime
+    									, String endHrTime, String endMinTime )
+    {	
+								String startTime = getTimeString(startHrTime,startMinTime);
+								String endTime =getTimeString(endHrTime,endMinTime);
+								long totalTime = getTotalTime(startTime,endTime,TimeUnit.HOURS,new SimpleDateFormat("hh:mm"));
+								if(totalTime < 0) 
+									totalTime = 12 + totalTime;
+								long totalDays = getTotalTime(startDate,endDate,TimeUnit.DAYS,new SimpleDateFormat("MM/dd/yyyy"))+1;
+								String[] str =  startDate.split("/");
+								String month = monthList[Integer.parseInt(str[0])-1];
+								
+								long totalWaterConsumption = getTotalWaterConsumption(waterflow,totalTime,totalDays);
+								///if the start or end time is midnight or midday then convert to positive difference hours 
+								if(totalTime < 0)  
+									  totalTime = 12+totalTime;
 
+								
+								this.insertScheduleRow(con, scheduleName, sprinkler, group
+																, startDate, endDate ,month
+																, startTime, endTime
+																, totalTime,totalDays,totalWaterConsumption,waterflow);
+										
+				
+	}//end insert method
+	
 }
