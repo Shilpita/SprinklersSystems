@@ -4,12 +4,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class InsertToDB {
+public class ConnectToDB {
 	   public String smtInsert ;
 	   public Connection con ;
 	
 	  // public InsertToDB(String smtInsert){
-	   public InsertToDB() throws ClassNotFoundException, SQLException{
+	   public ConnectToDB() throws ClassNotFoundException, SQLException{
 		   this.con    		 = null;
 		   this.smtInsert    = null;      //      smtInsert;
 		 //  this.smtInsert    = null;

@@ -7,7 +7,7 @@ import java.sql.*;
 public class InsertGroupSprinklers {
 	private static String file ;
 	private static String line ;
-	private static  InsertToDB insertDBCon;
+	private static  ConnectToDB connectDBCon;
 	private static Connection con ;
 	private PreparedStatement preparedStatement ;
 	private String insertStmt ;
@@ -40,7 +40,7 @@ public class InsertGroupSprinklers {
 	public static void main(String[] args) { 
 		   InsertGroupSprinklers grp = new InsertGroupSprinklers();
 	       try {
-	    	   	con             = insertDBCon.openConnection();
+	    	   	con             = connectDBCon.openConnection();
 	    	   	FileInputStream fstream  = new FileInputStream(file);
 	    	   	BufferedReader br 		 = new BufferedReader(new InputStreamReader(fstream));
 	    	   	String delimiter = ",";
@@ -59,7 +59,7 @@ public class InsertGroupSprinklers {
 				ex.printStackTrace();
 			} finally {
 					if (con != null)
-					   insertDBCon.closeConnection(con);
+					   connectDBCon.closeConnection(con);
 			}
 	}
 }

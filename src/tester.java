@@ -4,12 +4,12 @@ import java.util.*;
 import java.util.Map.Entry;
 
 import project.backend.pkg.Sprinkler;
-import project.db.pkg.InsertToDB;
+import project.db.pkg.ConnectToDB;
 import project.db.pkg.InsertToSchedule;
 import project.db.pkg.QueryDB;
 
 public class Tester {
-		private static  InsertToDB insertDBCon ;
+		private static  ConnectToDB connectDBCon ;
 		private static Connection con ;
 		private static ArrayList<Sprinkler> activeSprinklerList ;
 		public Tester(){
@@ -36,8 +36,8 @@ public class Tester {
        	public static void main(String[] args) throws ParseException {
 		
 				try {
-						insertDBCon     	 = new InsertToDB();
-						con  				 = insertDBCon.openConnection();
+						connectDBCon     	 = new ConnectToDB();
+						con  				 = connectDBCon.openConnection();
 						QueryDB query 		 = new QueryDB();	
 						
 					  //  insertScheduleForGroup(con ,query,"North"); //Insert schedule for group
@@ -50,7 +50,7 @@ public class Tester {
 						e.printStackTrace();
 				}finally {
 					if (con != null)
-						   insertDBCon.closeConnection(con);
+						   connectDBCon.closeConnection(con);
 			    }
 
        	}//end main()

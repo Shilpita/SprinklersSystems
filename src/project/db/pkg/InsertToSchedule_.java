@@ -37,7 +37,7 @@ public class InsertToSchedule_ {
 	private static String startMinTime;
 	private static String endHrTime;
 	private static String endMinTime;
-	private static  InsertToDB insertDBCon ;
+	private static  ConnectToDB connectDBCon ;
 	private static Connection con ;
 	private PreparedStatement preparedStatement ;
 	private String insertStmt ;
@@ -121,8 +121,8 @@ public class InsertToSchedule_ {
 		String endTime =getTimeString(endHrTime,endMinTime);
 		Long totalTime = getTotalTime(startTime,endTime);
 		try {
-			insertDBCon     = new InsertToDB();
-			con             = insertDBCon.openConnection();
+			connectDBCon     = new ConnectToDB();
+			con             = connectDBCon.openConnection();
 			sched.insertScheduleRow(con, scheduleName, sprinkler, startDate, endDate, startTime, endTime, totalTime);
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -132,7 +132,7 @@ public class InsertToSchedule_ {
 			e.printStackTrace();
 		}finally {
 			if (con != null)
-				   insertDBCon.closeConnection(con);
+				connectDBCon.closeConnection(con);
 		}
 		
 	}
