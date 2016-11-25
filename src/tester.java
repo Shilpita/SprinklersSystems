@@ -16,7 +16,9 @@ public class Tester {
 			activeSprinklerList = new ArrayList<Sprinkler>();
 		}
 		
-        public static void insertScheduleForGroup(Connection con,QueryDB query,String group){
+        public static void insertScheduleForGroup(Connection con,QueryDB query,String group , String scheduleName
+        										  , String waterFlow , String startDate ,String endTime
+        										  , String startHr ,String startMin ,String endHr , String endMin){
 		
 			       InsertToSchedule insertSchedule = new InsertToSchedule();
 			       ArrayList<String> sprinkler	   = query.getAllSprinklers(con ,group);
@@ -25,10 +27,10 @@ public class Tester {
 					for(String i : sprinkler) {
 								System.out.println(i);
 					           //insert schedule in Db
-					           insertSchedule.processInsertSchedQuery(con,"Test5" , i ,group ,"LOW"
-								   									 ,"11/1/2016", "11/30/2016"
-								   									 ,"21", "30"
-								   									 ,"23", "30" );
+					           insertSchedule.processInsertSchedQuery(con,scheduleName , i ,group ,waterFlow
+								   									 ,startDate, endTime
+								   									 ,startHr, startMin
+								   									 ,endHr, endMin );
 					}
        }//end insert schedule method
 	    
@@ -40,8 +42,8 @@ public class Tester {
 						con  				 = connectDBCon.openConnection();
 						QueryDB query 		 = new QueryDB();	
 						
-					  //  insertScheduleForGroup(con ,query,"North"); //Insert schedule for group
-					 	activeSprinklerList = query.getActiveScheduleSprinklerGroup(con, "North", "11/23/2016", "22:50");
+					  // insertScheduleForGroup(con ,query,"West"); //Insert schedule for group
+					 	activeSprinklerList = query.getActiveScheduleSprinklerGroup(con);//  , "North", "11/24/2016", "22:50");
 						System.out.println(activeSprinklerList.toString());
 						
 				} catch (ClassNotFoundException e) {
