@@ -9,18 +9,26 @@ CREATE TABLE SPRINKLER_GROUP(
 );
 
 CREATE TABLE SPRINKLER_SCHEDULE(
-      scheduleID VARCHAR2(10)
+       scheduleName VARCHAR2(10)
       ,sprinklerID VARCHAR2(5)
-      ,scheduleDate Date
-      ,startTime TIMESTAMP 
-      ,endTime TIMESTAMP
+      ,LOCATION VARCHAR2(10)
+      ,scheduleStartDate Date
+      ,scheduleEndDate Date
+      ,SCHEDULEMONTH VARCHAR2(10)
+      ,startTime VARCHAR2(20)
+      ,endTime VARCHAR2(20)
       ,totalHours NUMBER
-      ,primary key (scheduleID, sprinklerID)
-    ,foreign key (sprinklerID) references SPRINKLER_GROUP(sprinklerID)
-    ON DELETE CASCADE
+      ,totalDays NUMBER
+      ,waterFlow VARCHAR2(10)
+      ,TOTALWATERCONSUMPTION NUMBER
+ --     ,primary key (scheduleID, sprinklerID)
+      ,foreign key (sprinklerID) references SPRINKLER_GROUP(sprinklerID)
+      ON DELETE CASCADE
 );
 
-CREATE TABLE WATER_CONSUMPTION(
+--DROP TABLE SPRINKLER_SCHEDULE;
 
-);
+--CREATE TABLE WATER_CONSUMPTION(
+--
+--);
 
