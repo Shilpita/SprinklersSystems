@@ -1,0 +1,16 @@
+1N,North,true,false,Low
+2N,North,true,false,Low
+3N,North,true,false,Low
+4N,North,true,false,Low
+1S,South,true,false,Low
+2S,South,true,false,Low
+3S,South,true,false,Low
+4S,South,true,false,Low
+1E,East,true,false,Low
+2E,East,true,false,Low
+3E,East,true,false,Low
+4E,East,true,false,Low
+1W,West,true,false,Low
+2W,West,true,false,Low
+3W,West,true,false,Low
+4W,West,true,false,Low
