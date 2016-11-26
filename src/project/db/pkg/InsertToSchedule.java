@@ -29,33 +29,6 @@ public class InsertToSchedule {
 			dateTime = new DayAndTime();
 	}
 	
-	/**
-	 * Function returns time in string Hr:min eg(12:20)
-	 * @param hr
-	 * @param min
-	 * @return String Hr:min
-	 */
-	private String getTimeString(String hr , String min){
-		return hr+":"+min;
-	}
-	
-	/**
-	 * Function returns date in sql date MM/dd/yyyy eg:12/20/2009 => 20-DEC-09.
-	 * @param mydate
-	 * @return  date in sql data format MM/dd/yyyy.
-	 */
-	private java.sql.Date getFormatedDate(String mydate){
-		java.util.Date myDate = new java.util.Date();
-		SimpleDateFormat format = new SimpleDateFormat( "MM/dd/yyyy" );  // United States style of format.
-		try {
-			myDate = format.parse( mydate );
-			
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		java.sql.Date sqlDate = new java.sql.Date( myDate.getTime() );
-		return sqlDate;
-	}
 	
 	/**
 	 * Function to get the total hours (or days) between two times (or days) in String.
@@ -122,8 +95,8 @@ public class InsertToSchedule {
 									preparedStatement.setString(1, scheduleName);
 									preparedStatement.setString(2, sprinkler);
 									preparedStatement.setString(3, group);
-									preparedStatement.setDate(4, getFormatedDate(startDate));
-									preparedStatement.setDate(5, getFormatedDate(endDate));
+									preparedStatement.setDate(4, dateTime.getFormatedDate(startDate));
+									preparedStatement.setDate(5, dateTime.getFormatedDate(endDate));
 									preparedStatement.setString(6,month);
 									preparedStatement.setString(7,startTime );
 									preparedStatement.setString(8, endTime);
@@ -163,8 +136,8 @@ public class InsertToSchedule {
     									,String startHrTime, String startMinTime
     									, String endHrTime, String endMinTime )
     {	
-								String startTime = getTimeString(startHrTime,startMinTime);
-								String endTime = getTimeString(endHrTime,endMinTime);
+								String startTime = dateTime.getTimeString(startHrTime,startMinTime);
+								String endTime = dateTime.getTimeString(endHrTime,endMinTime);
 								long totalTime = getTotalTime(startTime,endTime,TimeUnit.HOURS,new SimpleDateFormat("hh:mm"));
 								if(totalTime < 0) 
 									totalTime = 12 + totalTime;

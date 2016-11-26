@@ -79,7 +79,7 @@ public class QueryDB {
      * @return List of water consumption per month for each group
      */
 
-    public ArrayList<WaterConsumptionLog> getMonthlyWaterConsump(Connection con){
+    public ArrayList<WaterConsumptionLog> getMonthlyWaterConsumpSched(Connection con){
     	ArrayList<WaterConsumptionLog> waterLogList = new ArrayList<WaterConsumptionLog>();
     	try{
     			Statement stmt 	= con.createStatement();
@@ -105,7 +105,7 @@ public class QueryDB {
      * @return List of water consumption per month for each group
      */
     
-    public ArrayList<WaterConsumptionLog> getWaterConsumpByGroup(Connection con ,String month){
+    public ArrayList<WaterConsumptionLog> getWaterConsumpByGroupSched(Connection con ,String month){
     	ArrayList<WaterConsumptionLog> waterLogList = new ArrayList<WaterConsumptionLog>();
     	try{
     			Statement stmt 	= con.createStatement();
@@ -124,5 +124,55 @@ public class QueryDB {
     	return waterLogList;
     }
     
+    /**
+     * Query the water consumed per month by each group.
+     * @param con
+     * @return List of water consumption per month for each group
+     */
+
+    public ArrayList<WaterConsumptionLog> getMonthlyWaterConsump(Connection con){
+    	ArrayList<WaterConsumptionLog> waterLogList = new ArrayList<WaterConsumptionLog>();
+    	try{
+    			Statement stmt 	= con.createStatement();
+    			rs				= stmt.executeQuery("SELECT SCHEDULEMONTH , LOCATION, SUM(TOTALWATERCONSUMPTION) AS TOTALWATERPERMONTH"
+    												+" FROM WATER_CONSUMPTION"
+    												+" GROUP BY SCHEDULEMONTH,LOCATION"
+    												+" ORDER BY LOCATION");
+    			while(rs.next()){
+    					waterLogList.add(new WaterConsumptionLog(rs.getString("LOCATION")
+    															,rs.getString("SCHEDULEMONTH")
+    															,Long.parseLong(rs.getString("TOTALWATERPERMONTH"))));	
+    			}
+    	} catch ( SQLException e) {
+			e.printStackTrace();
+    	} 
+    	return waterLogList;
+    }
+    
+    /**
+     * Query the water consumed for given month by each group.
+     * @param con
+     * @param month
+     * @return List of water consumption per month for each group
+     */
+    
+    public ArrayList<WaterConsumptionLog> getWaterConsumpByGroup(Connection con ,String month){
+    	ArrayList<WaterConsumptionLog> waterLogList = new ArrayList<WaterConsumptionLog>();
+    	try{
+    			Statement stmt 	= con.createStatement();
+    			rs				= stmt.executeQuery("SELECT LOCATION, SUM(TOTALWATERCONSUMPTION) AS TOTALWATERPERMONTH"
+    												+" FROM WATER_CONSUMPTION WHERE SCHEDULEMONTH = '"+ month+"'"
+    												+" GROUP BY LOCATION"
+    												+" ORDER BY LOCATION");
+    			while(rs.next()){
+    					waterLogList.add(new WaterConsumptionLog(rs.getString("LOCATION")
+    															,month   //rs.getString("SCHEDULEMONTH")
+    															,Long.parseLong(rs.getString("TOTALWATERPERMONTH"))));	
+    			}
+    	} catch ( SQLException e) {
+			e.printStackTrace();
+    	} 
+    	return waterLogList;
+    }
 
 }
