@@ -13,6 +13,7 @@ import java.util.Date;
  */
 public class DayAndTime {
     private String day;
+    private Date date;
     private Time startTime;
     private Time endTime;
 	private String[] monthList = {	"JAN"
@@ -30,6 +31,7 @@ public class DayAndTime {
     
     public DayAndTime(){
         this.day = "";
+        this.date =null;
         this.startTime = null;
         this.endTime = null;
     }
@@ -92,13 +94,14 @@ public class DayAndTime {
 		return sqlDate;
 	}
     
+	
     
     /**
      * Get formated string for current date
      * @param currentDate
      * @return formated date string eg. 11-DEC-16
      */
-    public String  getFormattedDate() { 
+    public String  getFormattedDatetoString() { 
     	SimpleDateFormat newFormat=new SimpleDateFormat("dd-MMM-yy");
     	String formatedCurrentDate = null;
 
@@ -109,6 +112,19 @@ public class DayAndTime {
     }
     
     /**
+     * This method takes a string input in HH:mm format and returns Calender time in hh:mm format
+     * @param time
+     * @return Calender time in hh:mm format
+     */
+    public Calendar getStringToTime (String time){
+    	Calendar resultTime = Calendar.getInstance();
+    	resultTime.set(Calendar.HOUR_OF_DAY, Integer.parseInt(time.substring(0, 2)));
+    	resultTime.set(Calendar.MINUTE, Integer.parseInt(time.substring(3)));
+    	resultTime.set(Calendar.SECOND, 0);
+    	resultTime.set(Calendar.MILLISECOND, 0);
+        return resultTime;
+    }
+    /**
      * Method to check if current time is within the given sprinkler schedule time where startFlag = 1 , stopFlag =0 
      * @param startTime
      * @param endTime
@@ -117,19 +133,8 @@ public class DayAndTime {
      */
 	public boolean checkToStartSprinkler(String startTime,String endTime) throws ParseException {
         boolean isStartSprinkler = false;
-        Calendar calStart = Calendar.getInstance();
-        Calendar calEnd = Calendar.getInstance();
-        
-        calStart.set(Calendar.HOUR_OF_DAY, Integer.parseInt(startTime.substring(0, 2)));
-        calStart.set(Calendar.MINUTE, Integer.parseInt(startTime.substring(3)));
-        calStart.set(Calendar.SECOND, 0);
-        calStart.set(Calendar.MILLISECOND, 0);
-        
-        calEnd.set(Calendar.HOUR_OF_DAY, Integer.parseInt(endTime.substring(0, 2)));
-        calEnd.set(Calendar.MINUTE, Integer.parseInt(endTime.substring(3)));
-        calEnd.set(Calendar.SECOND, 0);
-        calEnd.set(Calendar.MILLISECOND, 0);
-        
+        Calendar calStart = getStringToTime(startTime);
+        Calendar calEnd = getStringToTime(endTime);
         if (Calendar.getInstance().after(calStart) && Calendar.getInstance().before(calEnd)) {
             System.out.println("start sprinkler");
             isStartSprinkler = true;
@@ -139,11 +144,13 @@ public class DayAndTime {
         
         return isStartSprinkler;
     }
-
+	
+	
 	public String[] getMonthList() {
 		return monthList;
 	}
 
+	
 	public void setMonthList(String[] monthList) {
 		this.monthList = monthList;
 	}

@@ -51,7 +51,7 @@ public class QueryDB {
      * @return List of sprinkler to be activated
      */
     public ArrayList<Sprinkler> getActiveScheduleSprinklerGroup(Connection con ){ 
-    	String todayDate = dateTime.getFormattedDate().toUpperCase() ;
+    	String todayDate = dateTime.getFormattedDatetoString().toUpperCase() ;
     	System.out.println(todayDate);
     	ArrayList<Sprinkler> activeSprinklerList = new ArrayList<Sprinkler>();
     	try{
@@ -71,6 +71,36 @@ public class QueryDB {
 			e.printStackTrace();
     	} 
     	return activeSprinklerList;
+    }
+    
+    /**
+     * Query to get active schedule list for current date and time
+     * @param con
+     * @return List of sprinkler to be activated
+     */
+    public ArrayList<Schedule> getActiveScheduleSprinklerList(Connection con ){ 
+    	String todayDate = dateTime.getFormattedDatetoString().toUpperCase() ;
+    	System.out.println(todayDate);
+    	ArrayList<Schedule> todaysScheduleList = new ArrayList<Schedule>();
+    	try{
+    			Statement stmt 	= con.createStatement();
+    			rs				= stmt.executeQuery("SELECT SPRINKLERID,LOCATION,SCHEDULESTARTDATE,SCHEDULEENDDATE,STARTTIME,ENDTIME,WATERFLOW  FROM SPRINKLER_SCHEDULE" 
+    												+" WHERE "  
+    												+"SCHEDULESTARTDATE <= '"+ todayDate
+    												+"' AND SCHEDULEENDDATE >= '"+ todayDate +"'");
+    			while(rs.next()){
+    			//	boolean flag = dateTime.checkToStartSprinkler(rs.getString("STARTTIME"),rs.getString("ENDTIME"));
+    				if(!todaysScheduleList.contains(rs.getString("SPRINKLERID")))
+    							todaysScheduleList.add(new Schedule(rs.getString("SCHEDULESTARTDATE")
+    															  , rs.getString("SCHEDULEENDDATE")
+    															  , rs.getString("STARTTIME"), rs.getString("ENDTIME")
+    															  , rs.getString("SPRINKLERID")));
+    						
+    			}
+    	} catch ( SQLException e) {
+			e.printStackTrace();
+    	} 
+    	return todaysScheduleList;
     }
     
     /**

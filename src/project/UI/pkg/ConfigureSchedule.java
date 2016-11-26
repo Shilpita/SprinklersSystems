@@ -2,14 +2,16 @@ package project.UI.pkg;
 
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.sql.Time;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
-
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-
+import project.backend.pkg.*;
+import project.db.pkg.*;
 import java.awt.BorderLayout;
-import java.awt.Color;
 
 public class ConfigureSchedule {
 
@@ -18,21 +20,23 @@ public class ConfigureSchedule {
 	private JRadioButton groupRdBtn ,sprinklerRdBtn ,selectedSprinklerRdBtn ;
 	private JRadioButton low , medium, high;
 	private ButtonGroup sprinklerSelectionGrp,waterFlowGrp;
-	private JTextField scheduleNameField, startDateField,endDateField, startHrField,endHrField, startMinField,endMinField;
-	private JTextField sprinklerInput ,scheduleInput ;
+	private JTextField startDateField, endDateField, startHrField, endHrField, startMinField, endMinField;
+	private JTextField sprinklerInput, scheduleInput;
 	private JLabel scheduleID, sprinklerID , startDateLabel,endDateLabel ,startHrLabel ,endHrLabel,startMinLabel ,endMinLabel ;
 	private JButton submit;
+	private JCheckBox N, S, E, W;
 	
 	//data member
 	private String scheduleName, startDate,endDate , sprinkler , group , waterflow ;
 	private String startHrTime,startMinTime, endHrTime,endMinTime ;
 	private ArrayList<String> sprinklerList;
+	//db member
 	
-	
+	private  ConnectToDB connectDBCon ;
+	private  Connection con ;
+	private QueryDB query;
 
-	/**
-	 * Launch the application.
-	 */
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -46,35 +50,32 @@ public class ConfigureSchedule {
 		});
 	}
 
-	/**
-	 * Create the application.
-	 */
 	public ConfigureSchedule() {
+		try {
+			connectDBCon     	 = new ConnectToDB();
+			con  				 = connectDBCon.openConnection();
+		} catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+		}
+		query 		 = new QueryDB();
 		initialize();
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
 	private void initialize() {
-		frame = new JFrame("Configuration");
+		frame = new JFrame("Schedule configuration");
 		frame.setBounds(100, 100, 450, 300);
 		
 		initializationSchedulePanel();
 		
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
         frame.pack();
 	}
 	
-	/**
-	 * Initialize panel for entering the schedule for 
-	 */
-	
 	private void initializationSchedulePanel(){
 		
 		panel = new JPanel();
-		panel.setBorder(new TitledBorder("Sprinkler Setting"));
+		//panel.setBorder(new TitledBorder("Sprinkler Setting"));
 		frame.getContentPane().add(panel, BorderLayout.CENTER);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 		
@@ -83,17 +84,27 @@ public class ConfigureSchedule {
 		panelSchedule.setBorder(new TitledBorder("Select Sprinkler"));
 		
 		JPanel panel1 = new JPanel();
-		scheduleID = new JLabel("Enter ScheduleName :");
+		scheduleID = new JLabel("ScheduleName: ");
+	//	scheduleID.setFont(new Font("Pristina", Font.BOLD, 25));
 		panel1.add(scheduleID);
 		scheduleInput = new JTextField(10);
+	//	scheduleInput.setFont(new Font("Pristina", Font.BOLD, 25));
 		panel1.add(scheduleInput);
 		panelSchedule.add(panel1);
 		
 		JPanel panel2 = new JPanel();
-		groupRdBtn = new JRadioButton("Group");
-		sprinklerRdBtn = new JRadioButton("Sprinkler"); 
+		/*groupRdBtn = new JRadioButton("Group");
+		groupRdBtn.setActionCommand("Group");
+		groupRdBtn.setFont(new Font("Pristina", Font.BOLD, 25));
+
+		sprinklerRdBtn = new JRadioButton("Sprinkler");
+		sprinklerRdBtn.setActionCommand("Sprinkler");
+		sprinklerRdBtn.setFont(new Font("Pristina", Font.BOLD, 25));
+
 		selectedSprinklerRdBtn =new JRadioButton("Multiple Sprinklers");
-		
+		selectedSprinklerRdBtn.setActionCommand("Multiple Sprinklers");
+		selectedSprinklerRdBtn.setFont(new Font("Pristina", Font.BOLD, 25));
+
 		sprinklerSelectionGrp = new ButtonGroup();
 		sprinklerSelectionGrp.add(groupRdBtn);
 		sprinklerSelectionGrp.add(sprinklerRdBtn);
@@ -101,33 +112,76 @@ public class ConfigureSchedule {
 		
 		panel2.add(groupRdBtn);
 		panel2.add(sprinklerRdBtn);
-		panel2.add(selectedSprinklerRdBtn);
+		panel2.add(selectedSprinklerRdBtn);*/
 		
-		sprinklerID = new JLabel("Enter SprinklerID(s)/Group :");
+		sprinklerID = new JLabel("Choose sprinkler group(s)");
+	//	sprinklerID.setFont(new Font("Pristina", Font.BOLD, 25));
 		panel2.add(sprinklerID);
-		sprinklerInput = new JTextField(10);
-		panel2.add(sprinklerInput);
-		JLabel label = new JLabel("(press enter after each sprinkler entry)");
-		label.setFont(new Font("TIMES ROMAN",Font.PLAIN,10));
-		panel2.add(label);
+		
+		N = new JCheckBox("N");
+	//	N.setFont(new Font("Pristina", Font.BOLD, 25));
+		E = new JCheckBox("E");
+	//	E.setFont(new Font("Pristina", Font.BOLD, 25));
+		W = new JCheckBox("W");
+	//	W.setFont(new Font("Pristina", Font.BOLD, 25));
+		S = new JCheckBox("S");
+	//	S.setFont(new Font("Pristina", Font.BOLD, 25));
+		panel2.add(N);
+		panel2.add(E);
+		panel2.add(W);
+		panel2.add(S);
+		
+		/*sprinklerInput = new JTextField(10);
+		sprinklerInput.setFont(new Font("Pristina", Font.BOLD, 25));
+		panel2.add(sprinklerInput);*/
+		
+		/*JLabel label = new JLabel("(press enter after each sprinkler entry)");
+		label.setFont(new Font("Pristina", Font.BOLD, 25));
+		panel2.add(label);*/
 		panelSchedule.add(panel2);
 		
 		panel.add(panelSchedule);
 		
 		panelTimeDay = new JPanel();
 		panelTimeDay.setBorder(new TitledBorder("Day and Time setting"));
-		startDateLabel = new JLabel("Enter Start Date :");
+		startDateLabel = new JLabel("Start Date: ");
+	//	startDateLabel.setFont(new Font("Pristina", Font.BOLD, 25));
+
 		startDateField= new JTextField(10); 
-		endDateLabel = new JLabel("Enter End Date :");
+//		startDateField.setFont(new Font("Pristina", Font.BOLD, 25));
+		startDateField.setText("mm/dd/yyyy");
+		
+		endDateLabel = new JLabel("End Date: ");
+//		endDateLabel.setFont(new Font("Pristina", Font.BOLD, 25));
+
 		endDateField= new JTextField(10); 
-		startHrLabel = new JLabel("Enter Start Time Hrs:"); 
+//		endDateField.setFont(new Font("Pristina", Font.BOLD, 25));
+		endDateField.setText("mm/dd/yyyy");
+		
+		startHrLabel = new JLabel("Start Time Hrs:"); 
+//		startHrLabel.setFont(new Font("Pristina", Font.BOLD, 25));
+
 		startHrField= new JTextField(2);
-		endHrLabel  = new JLabel("Enter End Time Hrs:");
+//		startHrField.setFont(new Font("Pristina", Font.BOLD, 25));
+
+		endHrLabel  = new JLabel("End Time Hrs:");
+//		endHrLabel.setFont(new Font("Pristina", Font.BOLD, 25));
+
 		endHrField = new JTextField(2);
-		startMinLabel = new JLabel("min:"); 
-		startMinField= new JTextField(2);
-		endMinLabel  = new JLabel("min:");
+//		endHrField.setFont(new Font("Pristina", Font.BOLD, 25));
+
+		startMinLabel = new JLabel("Min:"); 
+//		startMinLabel.setFont(new Font("Pristina", Font.BOLD, 25));
+
+		startMinField = new JTextField(2);
+//		startMinField.setFont(new Font("Pristina", Font.BOLD, 25));
+
+		endMinLabel  = new JLabel("Min:");
+//		endMinLabel.setFont(new Font("Pristina", Font.BOLD, 25));
+
 		endMinField = new JTextField(2);
+//		endMinField.setFont(new Font("Pristina", Font.BOLD, 25));
+
 		panelTimeDay.add(startDateLabel);
 		panelTimeDay.add(startDateField);
 		panelTimeDay.add(endDateLabel);
@@ -145,9 +199,15 @@ public class ConfigureSchedule {
 		
 		panelWaterFlow = new JPanel();
 		panelWaterFlow.setBorder(new TitledBorder("Waterflow setting"));
-		low = new JRadioButton("Low Waterflow");
-		medium = new JRadioButton("Medium Waterflow");
-		high = new JRadioButton("High Waterflow");
+		low = new JRadioButton("Low");
+//		low.setFont(new Font("Pristina", Font.BOLD, 25));
+		low.setActionCommand("low");
+		medium = new JRadioButton("Medium");
+//		medium.setFont(new Font("Pristina", Font.BOLD, 25));
+		medium.setActionCommand("medium");
+		high = new JRadioButton("High");
+//		high.setFont(new Font("Pristina", Font.BOLD, 25));
+		high.setActionCommand("high");
 		waterFlowGrp = new ButtonGroup();
 		waterFlowGrp.add(low);
 		waterFlowGrp.add(medium);
@@ -160,10 +220,107 @@ public class ConfigureSchedule {
 		
 		JPanel panel3 = new JPanel();
 		submit = new JButton("Submit");
+		SubmitButtonHandler submitButtonHandler = new SubmitButtonHandler();
+		submit.addActionListener(submitButtonHandler);
+		
 		panel3.add(submit);
 		
-		panel.add(panel3);
+		panel.add(panel3);	
+	}
+	
+	private class SubmitButtonHandler implements ActionListener{
+		public void actionPerformed(ActionEvent e) {
+			String scheduleName = getScheduleInput();
+			//String sprinklerInput = getSprinklerInput();
+			String startDate = getStartDateField();
+			String endDate = getEndDateField();
+			if (endDate.length()==0 || endDate==null){
+				endDate=startDate;
+			}
+			String startTimeHr = getStartHrField();
+			String startTimeMin = getStartMinField();
+			String endTimeHr = getEndHrField();
+			String endTimeMin = getEndMinField();
+			
+			//Get checked groups
+			ArrayList<String> group = new ArrayList<String>();
+			if (N.isSelected()==true) group.add("N");
+			if (S.isSelected()==true) group.add("S");
+			if (E.isSelected()==true) group.add("E");
+			if (W.isSelected()==true) group.add("W");
+			
+			//make getTimeString in InserToSchedule public
+			
+			//Group/individual sprinkler
+			/*String sprinkler ="";
+			if (groupRdBtn.isSelected()==true) sprinkler = groupRdBtn.getActionCommand();
+			if (sprinklerRdBtn.isSelected()==true) sprinkler = sprinklerRdBtn.getActionCommand();
+			if (selectedSprinklerRdBtn.isSelected()==true) sprinkler = selectedSprinklerRdBtn.getActionCommand();*/
+			
+			//Water configuration
+			String waterConfig="";
+			if (low.isSelected()==true) waterConfig = low.getActionCommand();
+			if (medium.isSelected()==true) waterConfig = medium.getActionCommand();
+			if (high.isSelected()==true) waterConfig = high.getActionCommand();
+			
+			
+			//Call the insertToSchedule function
+			insertScheduleForGroup(con ,query,"West"); //Insert schedule for group
+			
+			System.out.println(scheduleName +" "+startDate+" "+ endDate+" "+startTimeHr+" "+ startTimeMin
+					+ " "+ endTimeHr + " " + endTimeMin);
+		}
 		
 	}
+	
+	public String getStartDateField(){
+		return startDateField.getText();
+	}
+	
+	public String getEndDateField(){
+		return endDateField.getText();
+	}
+	
+	public String getStartHrField(){
+		return startHrField.getText();
+	}
+	
+	public String getEndHrField(){
+		return endHrField.getText();
+	}
+	
+	public String getStartMinField(){
+		return startMinField.getText();
+	}
 
+	public String getEndMinField(){
+		return endMinField.getText();
+	}
+	
+	public String getSprinklerInput(){
+		return sprinklerInput.getText();
+	}
+	
+	public String getScheduleInput(){
+		return scheduleInput.getText();
+	}
+	
+    public static void insertScheduleForGroup(Connection con,QueryDB query,String group , String scheduleName
+			  , String waterFlow , String startDate ,String endTime
+			  , String startHr ,String startMin ,String endHr , String endMin){
+
+				InsertToSchedule insertSchedule = new InsertToSchedule();
+				ArrayList<String> sprinkler	   = query.getAllSprinklers(con ,group);
+				
+				// Display elements and insert schedule per sprinkler in group 
+				for(String i : sprinkler) {
+						System.out.println(i);
+						//insert schedule in Db
+						insertSchedule.processInsertSchedQuery(con,scheduleName , i ,group ,waterFlow
+															 ,startDate, endTime
+															 ,startHr, startMin
+															 ,endHr, endMin );
+				}
+	}//end insert schedule method
+	
 }
