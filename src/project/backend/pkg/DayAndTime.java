@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -95,6 +96,27 @@ public class DayAndTime {
 	}
     
 	
+	/**
+	 * Function to get the total hours (or days) between two times (or days) in String.
+	 * @param starttime
+	 * @param endtime
+	 * @param timeUnit  HOURS OR DAYS
+	 * @param sdf  eg MM/dd/yyyy  or Hr:mm
+	 * @return totalHours
+	 */
+	
+	public long getTotalTime(String starttime, String endtime,TimeUnit timeUnit,SimpleDateFormat sdf) {
+	        Date date = null;
+	        Date date1 = null;
+	        try {
+		            date = sdf.parse(starttime);
+		            date1 = sdf.parse(endtime);            
+	        } catch (ParseException e) {
+	        		e.printStackTrace();
+	        }
+	        long diffInMillies = date1.getTime() - date.getTime();
+	        return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
+	}
     
     /**
      * Get formated string for current date
@@ -124,6 +146,7 @@ public class DayAndTime {
     	resultTime.set(Calendar.MILLISECOND, 0);
         return resultTime;
     }
+    
     /**
      * Method to check if current time is within the given sprinkler schedule time where startFlag = 1 , stopFlag =0 
      * @param startTime

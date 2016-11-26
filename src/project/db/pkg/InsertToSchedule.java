@@ -21,6 +21,7 @@ public class InsertToSchedule {
 	private PreparedStatement preparedStatement ;
 	private String insertStmt ;
 	private DayAndTime dateTime;
+	
 	/**
 	 * Default Constructor 
 	 */
@@ -29,40 +30,7 @@ public class InsertToSchedule {
 			dateTime = new DayAndTime();
 	}
 	
-	
-	/**
-	 * Function to get the total hours (or days) between two times (or days) in String.
-	 * @param starttime
-	 * @param endtime
-	 * @param timeUnit  HOURS OR DAYS
-	 * @param sdf  eg MM/dd/yyyy  or Hr:mm
-	 * @return totalHours
-	 */
-	
-	private long getTotalTime(String starttime, String endtime,TimeUnit timeUnit,SimpleDateFormat sdf) {
-	        Date date = null;
-	        Date date1 = null;
-	        try {
-		            date = sdf.parse(starttime);
-		            date1 = sdf.parse(endtime);            
-	        } catch (ParseException e) {
-	        		e.printStackTrace();
-	        }
-	        long diffInMillies = date1.getTime() - date.getTime();
-	        return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
-	}
-	
-	/**
-	 * Function gets the total water consumption for complete schedule based on water flow
-	 * @param waterFlow
-	 * @param totalHrs
-	 * @param totalDays
-	 * @return total water consumption for schedule
-	 */
-	private long getTotalWaterConsumption(String waterFlow, long totalHrs , long totalDays){
-			int waterPerhr = WaterFlow.valueOf(waterFlow.toUpperCase()).calFlowPerHr();
-			return (waterPerhr * totalHrs * totalDays);
-	}
+
 	
 	/**
 	 * Prepare query to insert schedule row in DB
@@ -138,17 +106,16 @@ public class InsertToSchedule {
     {	
 								String startTime = dateTime.getTimeString(startHrTime,startMinTime);
 								String endTime = dateTime.getTimeString(endHrTime,endMinTime);
-								long totalTime = getTotalTime(startTime,endTime,TimeUnit.HOURS,new SimpleDateFormat("hh:mm"));
+								long totalTime = dateTime.getTotalTime(startTime,endTime,TimeUnit.HOURS,new SimpleDateFormat("hh:mm"));
+								///if the start or end time is midnight or midday then convert to positive difference hours
 								if(totalTime < 0) 
 									totalTime = 12 + totalTime;
-								long totalDays = getTotalTime(startDate,endDate,TimeUnit.DAYS,new SimpleDateFormat("MM/dd/yyyy"))+1;
+								long totalDays = dateTime.getTotalTime(startDate,endDate,TimeUnit.DAYS,new SimpleDateFormat("MM/dd/yyyy"))+1;
 								String[] str =  startDate.split("/");
 								String month = dateTime.getMonthList()[Integer.parseInt(str[0])-1];
 								
-								long totalWaterConsumption = getTotalWaterConsumption(waterflow,totalTime,totalDays);
-								///if the start or end time is midnight or midday then convert to positive difference hours 
-								if(totalTime < 0)  
-									  totalTime = 12+totalTime;
+								long totalWaterConsumption = WaterFlow.getTotalWaterConsumption(waterflow,totalTime,totalDays);
+ 
 
 								
 								this.insertScheduleRow(con, scheduleName, sprinkler, group

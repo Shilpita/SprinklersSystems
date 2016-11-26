@@ -18,6 +18,18 @@ public enum WaterFlow {
 		this.waterLevel = waterLevel;
 	}
 	public int calFlowPerHr(){ return waterPerHr * waterLevel;}
+	
+	/**
+	 * Function gets the total water consumption for complete schedule based on water flow
+	 * @param waterFlow
+	 * @param totalHrs
+	 * @param totalDays
+	 * @return total water consumption for schedule
+	 */
+	public static long getTotalWaterConsumption(String waterFlow, long totalHrs , long totalDays){
+			int waterPerhr = WaterFlow.valueOf(waterFlow.toUpperCase()).calFlowPerHr();
+			return (waterPerhr * totalHrs * totalDays);
+	}
 
     @Override
     public String toString() {

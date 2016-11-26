@@ -1,4 +1,4 @@
-package project.UI.pkg;
+package project.graph.pkg;
 
 
 
@@ -120,7 +120,7 @@ public class GroupBarchart extends ApplicationFrame {
     public static void main(final String[] args) {
 
         GroupBarchart demo = new GroupBarchart("Water Consumption by Month");
-        CategoryDataset dataset = createGroupDataset("NOV");
+        CategoryDataset dataset = createGroupDataset("JAN");
         JFreeChart chart = createGroupChart(dataset);
         ChartPanel chartPanel = new ChartPanel(chart);
         chartPanel.setPreferredSize(new Dimension(500, 500));
