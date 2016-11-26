@@ -51,13 +51,6 @@ public class ConfigureSchedule {
 	}
 
 	public ConfigureSchedule() {
-		try {
-			connectDBCon     	 = new ConnectToDB();
-			con  				 = connectDBCon.openConnection();
-		} catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
-		}
-		query 		 = new QueryDB();
 		initialize();
 	}
 
@@ -244,18 +237,12 @@ public class ConfigureSchedule {
 			
 			//Get checked groups
 			ArrayList<String> group = new ArrayList<String>();
-			if (N.isSelected()==true) group.add("N");
-			if (S.isSelected()==true) group.add("S");
-			if (E.isSelected()==true) group.add("E");
-			if (W.isSelected()==true) group.add("W");
+			if (N.isSelected()==true) group.add("North");
+			if (S.isSelected()==true) group.add("South");
+			if (E.isSelected()==true) group.add("East");
+			if (W.isSelected()==true) group.add("West");
 			
 			//make getTimeString in InserToSchedule public
-			
-			//Group/individual sprinkler
-			/*String sprinkler ="";
-			if (groupRdBtn.isSelected()==true) sprinkler = groupRdBtn.getActionCommand();
-			if (sprinklerRdBtn.isSelected()==true) sprinkler = sprinklerRdBtn.getActionCommand();
-			if (selectedSprinklerRdBtn.isSelected()==true) sprinkler = selectedSprinklerRdBtn.getActionCommand();*/
 			
 			//Water configuration
 			String waterConfig="";
@@ -263,15 +250,48 @@ public class ConfigureSchedule {
 			if (medium.isSelected()==true) waterConfig = medium.getActionCommand();
 			if (high.isSelected()==true) waterConfig = high.getActionCommand();
 			
-			
 			//Call the insertToSchedule function
-			insertScheduleForGroup(con ,query,"West"); //Insert schedule for group
-			
-			System.out.println(scheduleName +" "+startDate+" "+ endDate+" "+startTimeHr+" "+ startTimeMin
-					+ " "+ endTimeHr + " " + endTimeMin);
+				for(String i:group){
+							System.out.println(scheduleName +" "+startDate+" "+ endDate+" "+startTimeHr+" "+ startTimeMin
+							+ " "+ endTimeHr + " " + endTimeMin+" "+ i);
+							insertScheduleForGroup( i ,  scheduleName
+							  ,  waterConfig.toUpperCase() ,  startDate , endDate
+							  ,  startTimeHr , startTimeMin , endTimeHr ,  endTimeMin); //Insert schedule for group
+				 }
 		}
 		
 	}
+	
+    public void insertScheduleForGroup(String group , String scheduleName
+			  , String waterFlow , String startDate ,String endTime
+			  , String startHr ,String startMin ,String endHr , String endMin){
+    	
+    			System.out.println("inside insert schedule for group"+ group);
+				InsertToSchedule insertSchedule = new InsertToSchedule();
+				try {
+					connectDBCon     	 = new ConnectToDB();
+					con  				 = connectDBCon.openConnection();
+				    query 				 = new QueryDB();
+					ArrayList<String> sprinkler	   = query.getAllSprinklers(con ,group);
+					System.out.println(sprinkler);
+				 // Display elements and insert schedule per sprinkler in group 
+					for(String i : sprinkler) {
+							System.out.println(i);
+							//insert schedule in Db
+							insertSchedule.processInsertSchedQuery(con,scheduleName , i ,group ,waterFlow
+																 ,startDate, endTime
+																 ,startHr, startMin
+																 ,endHr, endMin );
+					}
+				} catch (ClassNotFoundException ex) {
+					ex.printStackTrace();
+				} catch (SQLException ex) {
+					ex.printStackTrace();
+				}finally {
+				if (con != null)
+					   connectDBCon.closeConnection(con);
+				}
+	}//end insert schedule method
 	
 	public String getStartDateField(){
 		return startDateField.getText();
@@ -305,22 +325,6 @@ public class ConfigureSchedule {
 		return scheduleInput.getText();
 	}
 	
-    public static void insertScheduleForGroup(Connection con,QueryDB query,String group , String scheduleName
-			  , String waterFlow , String startDate ,String endTime
-			  , String startHr ,String startMin ,String endHr , String endMin){
 
-				InsertToSchedule insertSchedule = new InsertToSchedule();
-				ArrayList<String> sprinkler	   = query.getAllSprinklers(con ,group);
-				
-				// Display elements and insert schedule per sprinkler in group 
-				for(String i : sprinkler) {
-						System.out.println(i);
-						//insert schedule in Db
-						insertSchedule.processInsertSchedQuery(con,scheduleName , i ,group ,waterFlow
-															 ,startDate, endTime
-															 ,startHr, startMin
-															 ,endHr, endMin );
-				}
-	}//end insert schedule method
 	
 }

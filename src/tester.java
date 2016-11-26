@@ -17,7 +17,7 @@ public class Tester {
 		}
 		
         public static void insertScheduleForGroup(Connection con,QueryDB query,String group , String scheduleName
-        										  , String waterFlow , String startDate ,String endTime
+        										  , String waterFlow , String startDate ,String endDate
         										  , String startHr ,String startMin ,String endHr , String endMin){
 		
 			       InsertToSchedule insertSchedule = new InsertToSchedule();
@@ -28,7 +28,7 @@ public class Tester {
 								System.out.println(i);
 					           //insert schedule in Db
 					           insertSchedule.processInsertSchedQuery(con,scheduleName , i ,group ,waterFlow
-								   									 ,startDate, endTime
+								   									 ,startDate, endDate
 								   									 ,startHr, startMin
 								   									 ,endHr, endMin );
 					}
