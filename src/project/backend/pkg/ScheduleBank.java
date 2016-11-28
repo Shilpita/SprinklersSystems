@@ -4,63 +4,32 @@ import java.sql.*;
 import java.text.*;
 import java.util.*;
 import java.util.Date;
-import java.util.concurrent.*;
-import project.UI.pkg.*;
 import project.db.pkg.*;
-
-
 
 
 public class ScheduleBank extends Observable {
 	private ArrayList<Schedule> todaysScheduleList;
-	private Clock clock;
+	private ArrayList<ScheduledGroup> scheduleGroupList;
+	private static ScheduledGroup currentSchedule;
 	private static  ConnectToDB connectDBCon ;
 	private static Connection con ;
-    private ScheduledExecutorService service;
-    
+	private Timer timer;
+	private static int index;
+	private DayAndTime dayTime;
+	
+	
 	public ScheduleBank() throws ParseException{
 		this.todaysScheduleList = new ArrayList<Schedule>();
-		this.service = Executors.newSingleThreadScheduledExecutor();
+		this.scheduleGroupList = new ArrayList<ScheduledGroup>();
+		this.dayTime = new DayAndTime();
+		index =0;
+		
 	}
 	
 	public void startNotifying(){
-		Schedule s = todaysScheduleList.get(0);
-		
-		//DateFormat dateFormatter = new SimpleDateFormat("HH:mm:ss");
-	    //Date date = dateFormatter.parse("2016-11-25 18:41:10");
-		Date startDate = s.getStart();
-		Date endDate = s.getEnd();
-		
-		Calendar now= Calendar.getInstance();
-		String hour =   String.valueOf(now.get(Calendar.HOUR_OF_DAY));
-		String minute = String.valueOf(now.get(Calendar.MINUTE));
-		while (true) {
-		    hour =   String.valueOf(now.get(Calendar.HOUR_OF_DAY));
-		    minute = String.valueOf(now.get(Calendar.MINUTE));
-		    System.out.println(hour);
-		    System.out.println(minute);
-		    String currTime = hour +":"+minute;
-		    
-		   // boolean flag = dateTime.checkToStartSprinkler(rs.getString("STARTTIME"),rs.getString("ENDTIME"));
-		    
-		    
-		    if (currTime.equals(s.getStart().toString())){
-				setChanged();
-	        	notifyObservers("Turn on");
-	        }
-	        if (currTime.equals(s.getEnd().toString())){
-	        	setChanged();
-	        	notifyObservers("Turn off");
-	        }
-	        
-	        
-		    // sleep for 5 secs (so minute updates will be accurate to 5 secs)
-		    // Thread.sleep is not always precise and inaccuracies
-		    // could build up if we slept for 1 minute
-		    try { Thread.sleep(5000); } catch(Exception e){}
-		    // later on when you build more complex programs,
-		    // you will make use of the catch block, but for now, ignore it
-		}
+		timer = new Timer();
+		ScheduleNotifier sn = new ScheduleNotifier();
+		timer.schedule(sn, 0, 1000);
 	}
 	
 	public void loadSchedules(){
@@ -68,7 +37,7 @@ public class ScheduleBank extends Observable {
 						connectDBCon     	 = new ConnectToDB();
 						con  				 = connectDBCon.openConnection();
 						QueryDB query 		 = new QueryDB();
-						todaysScheduleList = query.getActiveScheduleSprinklerList(con);//  , "North", "11/24/2016", "22:50");
+						todaysScheduleList 	 = query.getActiveScheduleSprinklerGroup(con);//  , "North", "11/24/2016", "22:50");
 						System.out.println(todaysScheduleList.toString());
 				} catch (ClassNotFoundException | SQLException e) {
 				// TODO Auto-generated catch block
@@ -81,7 +50,71 @@ public class ScheduleBank extends Observable {
 		this.todaysScheduleList.add(s);
 	}
 	
-	public void sort(ArrayList<Schedule> todaysScheduleList){
+	public void sort(){
 			Collections.sort(todaysScheduleList);
 	}
+	
+	public void getScheduledGroupList(){
+		//ArrayList<ScheduledGroup> resultList = new ArrayList<ScheduledGroup>();
+		ScheduledGroup tempSG = new ScheduledGroup(todaysScheduleList.get(0).getSprinklerGroup()
+												,todaysScheduleList.get(0).getStartTime()
+												, todaysScheduleList.get(0).getEndTime());
+		for(int i = 1 ; i< todaysScheduleList.size(); i++){
+			if(tempSG.getStartTime().equals(dayTime.getTimeToString(todaysScheduleList.get(i).getStartTime()))
+				&& tempSG.getEndTime().equals(dayTime.getTimeToString(todaysScheduleList.get(i).getEndTime()))){
+				   tempSG.setGroups(tempSG.getGroups()+" "+ todaysScheduleList.get(i).getSprinklerGroup());	
+				}
+			else{
+				scheduleGroupList.add(tempSG);
+					tempSG =  new ScheduledGroup(todaysScheduleList.get(i).getSprinklerGroup()
+							,todaysScheduleList.get(i).getStartTime()
+							, todaysScheduleList.get(i).getEndTime()); 
+			}	
+		}
+		scheduleGroupList.add(tempSG);
+		
+		
+		
+	}
+	
+	public void moveIndexToCurrent() throws ParseException{
+		  for(int i =0 ; i< scheduleGroupList.size() ;i++){
+			 // String startTime = todaysScheduleList.get(i).getStartTime();
+			  boolean moveFlag = dayTime.checkToStartSprinkler(scheduleGroupList.get(i).getStartTime()
+					  										  ,scheduleGroupList.get(i).getEndTime());
+			  if(!moveFlag){
+				  index =i;
+				  break;
+			  }
+				  
+		  }
+	}
+	
+	/**
+	 * Inner Class
+	 */
+	private class ScheduleNotifier extends TimerTask{
+		public void run() {
+			currentSchedule = scheduleGroupList.get(index);
+			if (getCurrentTimeStamp().equals(currentSchedule.getStartTime()+":00")){
+				setChanged();
+				notifyObservers("ON:" + currentSchedule.getGroups());
+			}
+			if (getCurrentTimeStamp().equals(currentSchedule.getEndTime()+":00")){
+				setChanged();
+				notifyObservers("OFF:" + currentSchedule.getGroups());
+				index++;
+				if (index == todaysScheduleList.size()) {}
+				else {currentSchedule = scheduleGroupList.get(index);}
+			}
+		}
+	}
+	
+	//Returns 24 hour format time. HH:MM:ss
+	public String getCurrentTimeStamp() {
+		SimpleDateFormat sdfDate = new SimpleDateFormat("HH:mm:ss");
+		return sdfDate.format(new Date());
+	}
+	
+	
 }

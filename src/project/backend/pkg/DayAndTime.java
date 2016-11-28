@@ -147,6 +147,12 @@ public class DayAndTime {
         return resultTime;
     }
     
+    public String getTimeToString(Calendar c){
+    	SimpleDateFormat newFormat=new SimpleDateFormat("HH:mm");
+    	String output = newFormat.format(c.getTime());
+    	return output;
+    }
+    
     /**
      * Method to check if current time is within the given sprinkler schedule time where startFlag = 1 , stopFlag =0 
      * @param startTime
@@ -167,8 +173,20 @@ public class DayAndTime {
         
         return isStartSprinkler;
     }
-	
-	
+	/*
+	public boolean checkToStartSprinkler(Calendar startTime,Calendar endTime){ //throws ParseException {
+        boolean isStartSprinkler = false;
+     //   Calendar calStart = getStringToTime(startTime);
+     //   Calendar calEnd = getStringToTime(endTime);
+        if (Calendar.getInstance().after(startTime) && Calendar.getInstance().before(endTime)) {
+            System.out.println("start sprinkler");
+            isStartSprinkler = true;
+        } else {
+            System.out.println("Do not start sprinkler");
+        } 
+        return isStartSprinkler;
+    }
+	*/
 	public String[] getMonthList() {
 		return monthList;
 	}

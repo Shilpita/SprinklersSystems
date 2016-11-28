@@ -50,27 +50,23 @@ public class QueryDB {
      * @param con
      * @return List of sprinkler to be activated
      */
-    public ArrayList<Sprinkler> getActiveScheduleSprinklerGroup(Connection con ){ 
+    public ArrayList<Schedule> getActiveScheduleSprinklerGroup(Connection con ){ 
     	String todayDate = dateTime.getFormattedDatetoString().toUpperCase() ;
     	System.out.println(todayDate);
-    	ArrayList<Sprinkler> activeSprinklerList = new ArrayList<Sprinkler>();
+    	ArrayList<Schedule> todaysScheduleList = new ArrayList<Schedule>();
     	try{
     			Statement stmt 	= con.createStatement();
-    			rs				= stmt.executeQuery("SELECT SPRINKLERID,LOCATION,STARTTIME,ENDTIME,WATERFLOW  FROM SPRINKLER_SCHEDULE" 
-    												+" WHERE "  
-    												+"SCHEDULESTARTDATE <= '"+ todayDate
+    			rs				= stmt.executeQuery("SELECT DISTINCT LOCATION,STARTTIME,ENDTIME  FROM SPRINKLER_SCHEDULE" 
+    												+" WHERE"  
+    												+" SCHEDULESTARTDATE <= '"+ todayDate
     												+"' AND SCHEDULEENDDATE >= '"+ todayDate +"'");
     			while(rs.next()){
-    				boolean flag = dateTime.checkToStartSprinkler(rs.getString("STARTTIME"),rs.getString("ENDTIME"));
-    				if(!activeSprinklerList.contains(rs.getString("SPRINKLERID"))){
-    					activeSprinklerList.add(new Sprinkler(rs.getString("SPRINKLERID"), rs.getString("LOCATION")
-    														  , true, flag, rs.getString("WATERFLOW")));
-    				}		
+    				todaysScheduleList.add(new Schedule(rs.getString("LOCATION"), rs.getString("STARTTIME"), rs.getString("ENDTIME")));
     			}
-    	} catch ( SQLException | ParseException e) {
+    	} catch ( SQLException e) {
 			e.printStackTrace();
     	} 
-    	return activeSprinklerList;
+    	return todaysScheduleList;
     }
     
     /**
@@ -78,10 +74,11 @@ public class QueryDB {
      * @param con
      * @return List of sprinkler to be activated
      */
+    /**
     public ArrayList<Schedule> getActiveScheduleSprinklerList(Connection con ){ 
     	String todayDate = dateTime.getFormattedDatetoString().toUpperCase() ;
     	System.out.println(todayDate);
-    	ArrayList<Schedule> todaysScheduleList = new ArrayList<Schedule>();
+    	ArrayList<Schedule> todaysScheduleSprinklerList = new ArrayList<Schedule>();
     	try{
     			Statement stmt 	= con.createStatement();
     			rs				= stmt.executeQuery("SELECT SPRINKLERID,LOCATION,SCHEDULESTARTDATE,SCHEDULEENDDATE,STARTTIME,ENDTIME,WATERFLOW  FROM SPRINKLER_SCHEDULE" 
@@ -90,8 +87,8 @@ public class QueryDB {
     												+"' AND SCHEDULEENDDATE >= '"+ todayDate +"'");
     			while(rs.next()){
     			//	boolean flag = dateTime.checkToStartSprinkler(rs.getString("STARTTIME"),rs.getString("ENDTIME"));
-    				if(!todaysScheduleList.contains(rs.getString("SPRINKLERID")))
-    							todaysScheduleList.add(new Schedule(rs.getString("SCHEDULESTARTDATE")
+    				if(!todaysScheduleSprinklerList.contains(rs.getString("SPRINKLERID")))
+    					todaysScheduleSprinklerList.add(new Schedule(rs.getString("SCHEDULESTARTDATE")
     															  , rs.getString("SCHEDULEENDDATE")
     															  , rs.getString("STARTTIME"), rs.getString("ENDTIME")
     															  , rs.getString("SPRINKLERID")));
@@ -100,8 +97,10 @@ public class QueryDB {
     	} catch ( SQLException e) {
 			e.printStackTrace();
     	} 
-    	return todaysScheduleList;
+    	return todaysScheduleSprinklerList;
     }
+    
+    */
     
     /**
      * Query the water consumed per month by each group.

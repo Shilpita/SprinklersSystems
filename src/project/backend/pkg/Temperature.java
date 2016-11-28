@@ -1,72 +1,63 @@
 package project.backend.pkg;
 
-/*
- * Class to set the threshold temperature.
- */
+import java.util.Observable;
+import java.util.Observer;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
+public class Temperature extends Observable {
+	private int min;
+	private int max;
+	private int currTemperature;
+	private Timer timer;
+	
+	public Temperature(){
+		this.min = 55;
+		this.max = 90;
+		Random rand = new Random();
+		int upperRange = this.max+5;
+		int lowerRange = this.min-5;
+		this.currTemperature = rand.nextInt((upperRange - lowerRange) + 1) + lowerRange;
+	}
+	
+	public int getCurrTemperature() {
+		return currTemperature;
+	}
 
-import java.util.*;
+	public void setCurrTemperature(int currTemperature) {
+		this.currTemperature = currTemperature;
+	}
 
-/**
- *
- * @author shilpita_roy
- */
-public class Temperature {
-  //  private float currentTemperature;
-    private float minTemperature;
-    private float maxTemperature;
-
-    public Temperature() {
-        this.minTemperature = 55;
-        this.maxTemperature = 95; 
-    //    this.currentTemperature = generateCurrentTemperature();
-    }
-    
-    
-    public Temperature(float currentTemperature, float minTemperature, float maxTemperature) {
-     //   this.currentTemperature = currentTemperature;
-        this.minTemperature = minTemperature;
-        this.maxTemperature = maxTemperature;
-    }
-    
-    private float generateCurrentTemperature(){
-        	Random r = new Random();
-		float low = minTemperature - 5;
-		float high = maxTemperature +5;
-		int result = (int) (r.nextInt((int) (high-low)) + low);
-	//	currentTemperature = result;
-                return  result;   //currentTemperature;
-    }
-/*
-    public float getCurrentTemperature() {
-        return currentTemperature;
-    }
-
-    public void setCurrentTemperature(float currentTemperature) {
-        this.currentTemperature = currentTemperature;
-    }
-*/
-    public float getMinTemperature() {
-        return minTemperature;
-    }
-
-    public void setMinTemperature(float minTemperature) {
-        this.minTemperature = minTemperature;
-    }
-
-    public float getMaxTemperature() {
-        return maxTemperature;
-    }
-
-    public void setMaxTemperature(float maxTemperature) {
-        this.maxTemperature = maxTemperature;
-    }
-
-    @Override
-    public String toString() {
-        return "Temperature{ minTemperature=" + minTemperature + ", maxTemperature=" + maxTemperature + '}';
-    }
-      
-    
+	public void startNotifying(){
+		timer = new Timer();
+		timer.schedule(new TimerTask()
+		{
+			public void run() {
+				if (currTemperature>=max){
+					setChanged();
+					notifyObservers("TOO HOT");
+				}
+				if (currTemperature<=min){
+					setChanged();
+					notifyObservers("TOO COLD");
+				}
+			}} , 0, 1000);
+	}
+	
+	public void setMin(int min){
+		this.min=min;
+	}
+	
+	public void setMax(int max){
+		this.max=max;
+	}
+	
+	public int getMin(){
+		return this.min;
+	}
+	
+	public int getMax(){
+		return this.max;
+	}
 }
-

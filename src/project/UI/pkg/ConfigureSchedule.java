@@ -15,7 +15,7 @@ import java.awt.BorderLayout;
 
 public class ConfigureSchedule {
 
-	private JFrame frame;
+	public JFrame frame;
 	private JPanel  panel ,panelSchedule, panelTimeDay,panelWaterFlow;
 	private JRadioButton groupRdBtn ,sprinklerRdBtn ,selectedSprinklerRdBtn ;
 	private JRadioButton low , medium, high;
@@ -37,18 +37,18 @@ public class ConfigureSchedule {
 	private QueryDB query;
 
 	
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ConfigureSchedule window = new ConfigureSchedule();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					ConfigureSchedule window = new ConfigureSchedule();
+//					window.frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	public ConfigureSchedule() {
 		initialize();
@@ -242,8 +242,6 @@ public class ConfigureSchedule {
 			if (E.isSelected()==true) group.add("East");
 			if (W.isSelected()==true) group.add("West");
 			
-			//make getTimeString in InserToSchedule public
-			
 			//Water configuration
 			String waterConfig="";
 			if (low.isSelected()==true) waterConfig = low.getActionCommand();
@@ -258,6 +256,8 @@ public class ConfigureSchedule {
 							  ,  waterConfig.toUpperCase() ,  startDate , endDate
 							  ,  startTimeHr , startTimeMin , endTimeHr ,  endTimeMin); //Insert schedule for group
 				 }
+				
+				//frame.dispose();
 		}
 		
 	}
