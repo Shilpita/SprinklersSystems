@@ -52,7 +52,7 @@ public class QueryDB {
      */
     public ArrayList<Schedule> getActiveScheduleSprinklerGroup(Connection con ){ 
     	String todayDate = dateTime.getFormattedDatetoString().toUpperCase() ;
-    	System.out.println(todayDate);
+    //	System.out.println(todayDate);
     	ArrayList<Schedule> todaysScheduleList = new ArrayList<Schedule>();
     	try{
     			Statement stmt 	= con.createStatement();

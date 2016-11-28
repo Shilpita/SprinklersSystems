@@ -164,7 +164,7 @@ public class DayAndTime {
         boolean isStartSprinkler = false;
         Calendar calStart = getStringToTime(startTime);
         Calendar calEnd = getStringToTime(endTime);
-        if (Calendar.getInstance().after(calStart) && Calendar.getInstance().before(calEnd)) {
+        if (Calendar.getInstance().after(calStart)){ // || Calendar.getInstance().after(calEnd)) {
             System.out.println("start sprinkler");
             isStartSprinkler = true;
         } else {

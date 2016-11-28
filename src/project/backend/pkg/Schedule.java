@@ -59,7 +59,7 @@ public class Schedule implements Comparable<Schedule>{
 
 	@Override
 	public String toString() {
-		return "Schedule [startTime=" + startTime + ", endTime=" + endTime + ", sprinklerGroup=" + sprinklerGroup + "]";
+		return "Schedule [startTime=" + startTime + "\n, endTime=" + endTime + "\n, sprinklerGroup=" + sprinklerGroup + "]\n\n";
 	}
 	
 

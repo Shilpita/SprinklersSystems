@@ -196,20 +196,21 @@ public class SprinklerPanel extends JPanel implements Observer {
 		String message2[] = message.split(":");
 		String groups[] = message2[1].split(" ");
 		if (message2[0].equalsIgnoreCase("ON")){
+			System.out.println("got notification to turn on");
 			for (String each: groups){
-				if (each.equalsIgnoreCase("N"))
+				if (each.equalsIgnoreCase("North"))
 					try {turnOnNorthPanel();
 					System.out.println("in north");} 
 				catch (MalformedURLException e3) {e3.printStackTrace();}
-				if (each.equalsIgnoreCase("S"))
+				if (each.equalsIgnoreCase("South"))
 					try {turnOnSouthPanel();
 					System.out.println("in south");} 
 				catch (MalformedURLException e2) {e2.printStackTrace();}
-				if (each.equalsIgnoreCase("E"))
+				if (each.equalsIgnoreCase("East"))
 					try {turnOnEastPanel();
 					System.out.println("in east");} 
 				catch (MalformedURLException e1) {e1.printStackTrace();}
-				if (each.equalsIgnoreCase("W"))
+				if (each.equalsIgnoreCase("West"))
 					try {turnOnWestPanel();
 					System.out.println("in west");} 
 				catch (MalformedURLException e) {e.printStackTrace();}
@@ -218,11 +219,12 @@ public class SprinklerPanel extends JPanel implements Observer {
 			this.repaint();
 		}
 		if (message2[0].equalsIgnoreCase("OFF")){
+			System.out.println("got notification to turn off");
 			for (String each: groups){
-				if (each.equalsIgnoreCase("N")) turnOffNorthPanel(); 
-				if (each.equalsIgnoreCase("S"))	turnOffSouthPanel();
-				if (each.equalsIgnoreCase("E")) turnOffEastPanel();
-				if (each.equalsIgnoreCase("W"))	turnOffWestPanel();
+				if (each.equalsIgnoreCase("North")) turnOffNorthPanel(); 
+				if (each.equalsIgnoreCase("South"))	turnOffSouthPanel();
+				if (each.equalsIgnoreCase("East")) turnOffEastPanel();
+				if (each.equalsIgnoreCase("West"))	turnOffWestPanel();
 			}
 			this.revalidate();
 			this.repaint();

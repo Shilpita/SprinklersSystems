@@ -176,12 +176,16 @@ public class HummingBirdUI {
 	}
 	
 	private class NorthOnDemand implements ActionListener{
+		String startTime = ScheduleBank.getCurrentTimeStamp();
+		
 		public void actionPerformed(ActionEvent e) {
 			if (n.isSelected()==true){
+				
 				try {sprinklerPanel.turnOnNorthPanel();} 
 				catch (MalformedURLException e1) {e1.printStackTrace();}
 			}
 			if (n.isSelected()==false){
+				
 				sprinklerPanel.turnOffNorthPanel();
 			}
 		}
