@@ -7,7 +7,6 @@ import project.backend.pkg.DayAndTime;
 import project.backend.pkg.Sprinkler;
 import project.db.pkg.ConnectToDB;
 import project.db.pkg.InsertToSchedule;
-import project.db.pkg.InsertWaterConsumption;
 import project.db.pkg.QueryDB;
 
 public class Tester {
@@ -39,7 +38,7 @@ public class Tester {
 					}
        }//end insert schedule method
 	    
- 	    
+ 	 /*   
         public static void insertWaterForGroup(Connection con,QueryDB query,String group 
 				  , String waterFlow , String startDate 
 				  , String startTime  ,String endTime ){
@@ -56,7 +55,8 @@ public class Tester {
 					 									 
 					 									 
 					}
-        }//end insert schedule method
+        }//end insert schedule method  
+         */
        	public static void main(String[] args) throws ParseException {
 		
 				try {
