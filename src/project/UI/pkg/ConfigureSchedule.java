@@ -15,16 +15,15 @@ import java.awt.BorderLayout;
 
 public class ConfigureSchedule {
 
-	public JFrame frame;
-	private JPanel  panel ,panelSchedule, panelTimeDay,panelWaterFlow;
+	protected JPanel  panel ,panelSchedule, panelTimeDay,panelWaterFlow;
 	private JRadioButton groupRdBtn ,sprinklerRdBtn ,selectedSprinklerRdBtn ;
-	private JRadioButton low , medium, high;
+	protected JRadioButton low , medium, high;
 	private ButtonGroup sprinklerSelectionGrp,waterFlowGrp;
 	private JTextField startDateField, endDateField, startHrField, endHrField, startMinField, endMinField;
 	private JTextField sprinklerInput, scheduleInput;
 	private JLabel scheduleID, sprinklerID , startDateLabel,endDateLabel ,startHrLabel ,endHrLabel,startMinLabel ,endMinLabel ;
-	private JButton submit;
-	private JCheckBox N, S, E, W;
+
+	protected JCheckBox N, S, E, W;
 	
 	//data member
 	private String scheduleName, startDate,endDate , sprinkler , group , waterflow ;
@@ -36,40 +35,19 @@ public class ConfigureSchedule {
 	private  Connection con ;
 	private QueryDB query;
 
-	
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					ConfigureSchedule window = new ConfigureSchedule();
-//					window.frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
 
 	public ConfigureSchedule() {
 		initialize();
 	}
 
 	private void initialize() {
-		frame = new JFrame("Schedule configuration");
-		frame.setBounds(100, 100, 450, 300);
-		
 		initializationSchedulePanel();
-		
-		//frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
-        frame.pack();
 	}
 	
 	private void initializationSchedulePanel(){
 		
 		panel = new JPanel();
-		//panel.setBorder(new TitledBorder("Sprinkler Setting"));
-		frame.getContentPane().add(panel, BorderLayout.CENTER);
+
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 		
 		panelSchedule = new JPanel();
@@ -86,26 +64,7 @@ public class ConfigureSchedule {
 		panelSchedule.add(panel1);
 		
 		JPanel panel2 = new JPanel();
-		/*groupRdBtn = new JRadioButton("Group");
-		groupRdBtn.setActionCommand("Group");
-		groupRdBtn.setFont(new Font("Pristina", Font.BOLD, 25));
 
-		sprinklerRdBtn = new JRadioButton("Sprinkler");
-		sprinklerRdBtn.setActionCommand("Sprinkler");
-		sprinklerRdBtn.setFont(new Font("Pristina", Font.BOLD, 25));
-
-		selectedSprinklerRdBtn =new JRadioButton("Multiple Sprinklers");
-		selectedSprinklerRdBtn.setActionCommand("Multiple Sprinklers");
-		selectedSprinklerRdBtn.setFont(new Font("Pristina", Font.BOLD, 25));
-
-		sprinklerSelectionGrp = new ButtonGroup();
-		sprinklerSelectionGrp.add(groupRdBtn);
-		sprinklerSelectionGrp.add(sprinklerRdBtn);
-		sprinklerSelectionGrp.add(selectedSprinklerRdBtn);
-		
-		panel2.add(groupRdBtn);
-		panel2.add(sprinklerRdBtn);
-		panel2.add(selectedSprinklerRdBtn);*/
 		
 		sprinklerID = new JLabel("Choose sprinkler group(s)");
 	//	sprinklerID.setFont(new Font("Pristina", Font.BOLD, 25));
@@ -124,13 +83,8 @@ public class ConfigureSchedule {
 		panel2.add(W);
 		panel2.add(S);
 		
-		/*sprinklerInput = new JTextField(10);
-		sprinklerInput.setFont(new Font("Pristina", Font.BOLD, 25));
-		panel2.add(sprinklerInput);*/
+
 		
-		/*JLabel label = new JLabel("(press enter after each sprinkler entry)");
-		label.setFont(new Font("Pristina", Font.BOLD, 25));
-		panel2.add(label);*/
 		panelSchedule.add(panel2);
 		
 		panel.add(panelSchedule);
@@ -193,13 +147,13 @@ public class ConfigureSchedule {
 		panelWaterFlow = new JPanel();
 		panelWaterFlow.setBorder(new TitledBorder("Waterflow setting"));
 		low = new JRadioButton("Low");
-//		low.setFont(new Font("Pristina", Font.BOLD, 25));
+
 		low.setActionCommand("low");
 		medium = new JRadioButton("Medium");
-//		medium.setFont(new Font("Pristina", Font.BOLD, 25));
+
 		medium.setActionCommand("medium");
 		high = new JRadioButton("High");
-//		high.setFont(new Font("Pristina", Font.BOLD, 25));
+
 		high.setActionCommand("high");
 		waterFlowGrp = new ButtonGroup();
 		waterFlowGrp.add(low);
@@ -210,58 +164,8 @@ public class ConfigureSchedule {
 		panelWaterFlow.add(medium);
 		panelWaterFlow.add(high);
 		panel.add(panelWaterFlow);
-		
-		JPanel panel3 = new JPanel();
-		submit = new JButton("Submit");
-		SubmitButtonHandler submitButtonHandler = new SubmitButtonHandler();
-		submit.addActionListener(submitButtonHandler);
-		
-		panel3.add(submit);
-		
-		panel.add(panel3);	
-	}
-	
-	private class SubmitButtonHandler implements ActionListener{
-		public void actionPerformed(ActionEvent e) {
-			String scheduleName = getScheduleInput();
-			//String sprinklerInput = getSprinklerInput();
-			String startDate = getStartDateField();
-			String endDate = getEndDateField();
-			if (endDate.length()==0 || endDate==null){
-				endDate=startDate;
-			}
-			String startTimeHr = getStartHrField();
-			String startTimeMin = getStartMinField();
-			String endTimeHr = getEndHrField();
-			String endTimeMin = getEndMinField();
-			
-			//Get checked groups
-			ArrayList<String> group = new ArrayList<String>();
-			if (N.isSelected()==true) group.add("North");
-			if (S.isSelected()==true) group.add("South");
-			if (E.isSelected()==true) group.add("East");
-			if (W.isSelected()==true) group.add("West");
-			
-			//Water configuration
-			String waterConfig="";
-			if (low.isSelected()==true) waterConfig = low.getActionCommand();
-			if (medium.isSelected()==true) waterConfig = medium.getActionCommand();
-			if (high.isSelected()==true) waterConfig = high.getActionCommand();
-			
-			//Call the insertToSchedule function
-				for(String i:group){
-							System.out.println(scheduleName +" "+startDate+" "+ endDate+" "+startTimeHr+" "+ startTimeMin
-							+ " "+ endTimeHr + " " + endTimeMin+" "+ i);
-							insertScheduleForGroup( i ,  scheduleName
-							  ,  waterConfig.toUpperCase() ,  startDate , endDate
-							  ,  startTimeHr , startTimeMin , endTimeHr ,  endTimeMin); //Insert schedule for group
-				 }
-				
-				//frame.dispose();
-		}
-		
-	}
-	
+	}	
+
     public void insertScheduleForGroup(String group , String scheduleName
 			  , String waterFlow , String startDate ,String endTime
 			  , String startHr ,String startMin ,String endHr , String endMin){

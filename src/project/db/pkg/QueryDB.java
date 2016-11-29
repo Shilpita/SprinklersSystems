@@ -34,7 +34,7 @@ public class QueryDB {
 							Statement stmt 	= con.createStatement();
 							rs				= stmt.executeQuery("SELECT SPRINKLERID "   
 																+ "FROM SPRINKLER_GROUP "
-																+ "WHERE FUNCTIONALSTATUS ='true' AND LOCATION = '"+group+"'");
+																+ "WHERE LOCATION = '"+group+"'");
 							while ( rs.next() ) {
 								sprinklerList.add(rs.getString("SPRINKLERID"));    
 				            }

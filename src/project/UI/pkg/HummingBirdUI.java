@@ -7,6 +7,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.*;
 
@@ -16,6 +18,8 @@ import javax.swing.Timer;
 import javax.swing.border.TitledBorder;
 
 import project.backend.pkg.*;
+import project.db.pkg.ConnectToDB;
+import project.db.pkg.QueryDB;
 
 
 
@@ -40,6 +44,10 @@ public class HummingBirdUI {
 	private Temperature temperature;
 	private ScheduleBank sb;
 	private SprinklerPanel sprinklerPanel;
+	
+	private static  ConnectToDB connectDBCon ;
+	private static Connection con ;
+	
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -85,7 +93,7 @@ public class HummingBirdUI {
 		statisticsPanel = new JPanel();
 		statisticsPanel.setPreferredSize(new Dimension(300,1000));
 		statisticsPanel.setLayout(new GridBagLayout());
-		statisticsPanel.setBackground(new Color(221, 160, 221));
+		statisticsPanel.setBackground(new Color(200, 160, 220));
 		frame.getContentPane().add(statisticsPanel, BorderLayout.EAST);
 				
 		gbc = new GridBagConstraints();
@@ -173,6 +181,33 @@ public class HummingBirdUI {
 		statisticsPanel.add(w, gbc);
 		gbc.gridx++;
 		statisticsPanel.add(s, gbc);
+		
+		JButton sprinklerStatus = new JButton("Show Sprinkler Status");
+		gbc.gridx--;
+		gbc.gridy++;
+		statisticsPanel.add(sprinklerStatus, gbc);
+		SprinklerStatusHandler handler = new SprinklerStatusHandler();
+		sprinklerStatus.addActionListener(handler);
+	}
+	
+	private class SprinklerStatusHandler implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			try {
+				connectDBCon     	 = new ConnectToDB();
+				con  				 = connectDBCon.openConnection();
+				QueryDB query 		 = new QueryDB();
+				//ArrayList<String> sprinkler	   = query.getAllSprinklers(con ,group);
+		} catch (ClassNotFoundException | SQLException ex) {
+			ex.printStackTrace();
+		}finally{
+			if(con!= null)
+				connectDBCon.closeConnection(con);
+		}
+			
+		}
+		
 	}
 	
 	private class NorthOnDemand implements ActionListener{
@@ -230,7 +265,7 @@ public class HummingBirdUI {
 	private void initializeScheduleSection(){
 		//Add schedule
 		btnAddSchedule = new JButton("Add Schedule");
-		gbc.gridx--;
+		//gbc.gridx--;
 		gbc.gridy++;
 		//btnAddSchedule.setFont(new Font("Pristina", Font.BOLD, 25));
 		statisticsPanel.add(btnAddSchedule, gbc);
@@ -238,7 +273,7 @@ public class HummingBirdUI {
 		btnAddSchedule.addActionListener(addScheduleHandler);
 
 		//Show schedule
-		btnShowSchedule = new JButton("Show Schedule");
+		btnShowSchedule = new JButton("Show Todays Schedule");
 		gbc.gridy++;
 		//btnShowSchedule.setFont(new Font("Pristina", Font.BOLD, 25));
 		statisticsPanel.add(btnShowSchedule, gbc);
@@ -374,7 +409,50 @@ public class HummingBirdUI {
 	private class AddScheduleHandler implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			ConfigureSchedule cs = new ConfigureSchedule();
-			cs.frame.setVisible(true);
+			int input = JOptionPane.showOptionDialog(null, cs.panel, "Configure Schedule", JOptionPane.OK_CANCEL_OPTION
+					, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+			
+			if(input == JOptionPane.OK_OPTION){
+				String scheduleName = cs.getScheduleInput();
+				//String sprinklerInput = getSprinklerInput();
+				String startDate = cs.getStartDateField();
+				String endDate = cs.getEndDateField();
+				if (endDate.length()==0 || endDate==null){
+					endDate=startDate;
+				}
+				String startTimeHr = cs.getStartHrField();
+				String startTimeMin = cs.getStartMinField();
+				String endTimeHr = cs.getEndHrField();
+				String endTimeMin = cs.getEndMinField();
+				
+				//Get checked groups
+				ArrayList<String> group = new ArrayList<String>();
+				if (cs.N.isSelected()==true) group.add("North");
+				if (cs.S.isSelected()==true) group.add("South");
+				if (cs.E.isSelected()==true) group.add("East");
+				if (cs.W.isSelected()==true) group.add("West");
+				
+				//Water configuration
+				String waterConfig="";
+				if (cs.low.isSelected()==true) waterConfig = cs.low.getActionCommand();
+				if (cs.medium.isSelected()==true) waterConfig = cs.medium.getActionCommand();
+				if (cs.high.isSelected()==true) waterConfig = cs.high.getActionCommand();
+				
+				//Call the insertToSchedule function
+					for(String i:group){
+								System.out.println(scheduleName +" "+startDate+" "+ endDate+" "+startTimeHr+" "+ startTimeMin
+								+ " "+ endTimeHr + " " + endTimeMin+" "+ i);
+								cs.insertScheduleForGroup( i ,  scheduleName
+								  ,  waterConfig.toUpperCase() ,  startDate , endDate
+								  ,  startTimeHr , startTimeMin , endTimeHr ,  endTimeMin); //Insert schedule for group
+					 }
+					
+					//frame.dispose();
+			}
+			
+			
+			
+			
 			System.out.println("loaded schedulesssssss");
 			sb.loadSchedules();   		//Queries the DB and brings all of todays schedules to front end
 			sb.sort();
@@ -385,7 +463,7 @@ public class HummingBirdUI {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			sb.startNotifying();
+			//sb.startNotifying();
 		
 		}
 	}
