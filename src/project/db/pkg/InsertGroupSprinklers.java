@@ -40,6 +40,7 @@ public class InsertGroupSprinklers {
 	public static void main(String[] args) { 
 		   InsertGroupSprinklers grp = new InsertGroupSprinklers();
 	       try {
+	    	    connectDBCon    = new ConnectToDB();
 	    	   	con             = connectDBCon.openConnection();
 	    	   	FileInputStream fstream  = new FileInputStream(file);
 	    	   	BufferedReader br 		 = new BufferedReader(new InputStreamReader(fstream));

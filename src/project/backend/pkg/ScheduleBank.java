@@ -8,15 +8,14 @@ import project.db.pkg.*;
 
 
 public class ScheduleBank extends Observable {
-	private ArrayList<Schedule> todaysScheduleList;
-	private ArrayList<ScheduledGroup> scheduleGroupList;
+	private static ArrayList<Schedule> todaysScheduleList;
+	private static ArrayList<ScheduledGroup> scheduleGroupList;
 	private static ScheduledGroup currentSchedule;
 	private static  ConnectToDB connectDBCon ;
 	private static Connection con ;
 	private Timer timer;
 	private static int index;
 	private DayAndTime dayTime;
-	
 	
 	public ScheduleBank() throws ParseException{
 		this.todaysScheduleList = new ArrayList<Schedule>();
@@ -25,6 +24,7 @@ public class ScheduleBank extends Observable {
 		index =0;
 		
 	}
+	
 	
 	public void startNotifying(){
 		timer = new Timer();
@@ -133,6 +133,25 @@ public class ScheduleBank extends Observable {
 		SimpleDateFormat sdfDate = new SimpleDateFormat("HH:mm:ss");
 		return sdfDate.format(new Date());
 	}
+	
+	//Getter Setter
+	public ArrayList<Schedule> getTodaysScheduleList() {
+		return todaysScheduleList;
+	}
+
+	public void setTodaysScheduleList(ArrayList<Schedule> todaysScheduleList) {
+		this.todaysScheduleList = todaysScheduleList;
+	}
+
+	public ArrayList<ScheduledGroup> getScheduleGroupList() {
+		return scheduleGroupList;
+	}
+
+	public void setScheduleGroupList(ArrayList<ScheduledGroup> scheduleGroupList) {
+		this.scheduleGroupList = scheduleGroupList;
+	}
+
+
 	
 	
 }

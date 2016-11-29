@@ -16,9 +16,9 @@ import java.awt.BorderLayout;
 public class ConfigureSchedule {
 
 	protected JPanel  panel ,panelSchedule, panelTimeDay,panelWaterFlow;
-	private JRadioButton groupRdBtn ,sprinklerRdBtn ,selectedSprinklerRdBtn ;
+//	private JRadioButton groupRdBtn ,sprinklerRdBtn ,selectedSprinklerRdBtn ;
 	protected JRadioButton low , medium, high;
-	private ButtonGroup sprinklerSelectionGrp,waterFlowGrp;
+	private ButtonGroup waterFlowGrp; //sprinklerSelectionGrp,
 	private JTextField startDateField, endDateField, startHrField, endHrField, startMinField, endMinField;
 	private JTextField sprinklerInput, scheduleInput;
 	private JLabel scheduleID, sprinklerID , startDateLabel,endDateLabel ,startHrLabel ,endHrLabel,startMinLabel ,endMinLabel ;
@@ -26,9 +26,9 @@ public class ConfigureSchedule {
 	protected JCheckBox N, S, E, W;
 	
 	//data member
-	private String scheduleName, startDate,endDate , sprinkler , group , waterflow ;
-	private String startHrTime,startMinTime, endHrTime,endMinTime ;
-	private ArrayList<String> sprinklerList;
+//	private String scheduleName, startDate,endDate , sprinkler , group , waterflow ;
+//	private String startHrTime,startMinTime, endHrTime,endMinTime ;
+//	private ArrayList<String> sprinklerList;
 	//db member
 	
 	private  ConnectToDB connectDBCon ;
@@ -40,12 +40,7 @@ public class ConfigureSchedule {
 		initialize();
 	}
 
-	private void initialize() {
-		initializationSchedulePanel();
-	}
-	
-	private void initializationSchedulePanel(){
-		
+	private void initialize() {	
 		panel = new JPanel();
 
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
@@ -176,10 +171,11 @@ public class ConfigureSchedule {
 					connectDBCon     	 = new ConnectToDB();
 					con  				 = connectDBCon.openConnection();
 				    query 				 = new QueryDB();
-					ArrayList<String> sprinkler	   = query.getAllSprinklers(con ,group);
-					System.out.println(sprinkler);
+					//ArrayList<String> sprinkler	   = query.getAllSprinklers(con ,group);
+				    query.getAllSprinklers(con ,group);
+					//System.out.println(sprinkler);
 				 // Display elements and insert schedule per sprinkler in group 
-					for(String i : sprinkler) {
+					for(String i : QueryDB.sprinklerList) {
 							System.out.println(i);
 							//insert schedule in Db
 							insertSchedule.processInsertSchedQuery(con,scheduleName , i ,group ,waterFlow

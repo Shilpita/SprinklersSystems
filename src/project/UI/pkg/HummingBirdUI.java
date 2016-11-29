@@ -45,8 +45,7 @@ public class HummingBirdUI {
 	private ScheduleBank sb;
 	private SprinklerPanel sprinklerPanel;
 	
-	private static  ConnectToDB connectDBCon ;
-	private static Connection con ;
+
 	
 	
 	public static void main(String[] args) {
@@ -194,17 +193,9 @@ public class HummingBirdUI {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			try {
-				connectDBCon     	 = new ConnectToDB();
-				con  				 = connectDBCon.openConnection();
-				QueryDB query 		 = new QueryDB();
-				//ArrayList<String> sprinkler	   = query.getAllSprinklers(con ,group);
-		} catch (ClassNotFoundException | SQLException ex) {
-			ex.printStackTrace();
-		}finally{
-			if(con!= null)
-				connectDBCon.closeConnection(con);
-		}
+			SprinklerStatus  ss= new SprinklerStatus();
+			int input = JOptionPane.showOptionDialog(null, ss.panel, "Sprinkler Working Status", JOptionPane.OK_CANCEL_OPTION
+					, JOptionPane.INFORMATION_MESSAGE, null, null, null);			
 			
 		}
 		
@@ -447,12 +438,9 @@ public class HummingBirdUI {
 								  ,  startTimeHr , startTimeMin , endTimeHr ,  endTimeMin); //Insert schedule for group
 					 }
 					
-					//frame.dispose();
 			}
 			
-			
-			
-			
+
 			System.out.println("loaded schedulesssssss");
 			sb.loadSchedules();   		//Queries the DB and brings all of todays schedules to front end
 			sb.sort();
@@ -460,7 +448,7 @@ public class HummingBirdUI {
 			try {
 				sb.moveIndexToCurrent();
 			} catch (ParseException e1) {
-				// TODO Auto-generated catch block
+			
 				e1.printStackTrace();
 			}
 			//sb.startNotifying();
@@ -470,11 +458,25 @@ public class HummingBirdUI {
 	
 	private class ShowScheduleHandler implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			//TODO
-			//basically need to display table from DB
-			//get show results from yelp gui
+			 ArrayList<JLabel> schedule = new ArrayList<JLabel> ();
+			 JPanel panel = new JPanel();
+			 panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+			 panel.setPreferredSize(new Dimension(500, 200));
+			 panel.setBorder(new TitledBorder("Todays Schedules"));
+				
+					for(ScheduledGroup i : sb.getScheduleGroupList()){
+						if(!schedule.contains(new JLabel(i.toString()))){
+							schedule.add(new JLabel(i.toString()));
+							panel.add(new JLabel(i.toString()));
+						}
+					}
+			
+			int input = JOptionPane.showOptionDialog(null, panel, "Sprinkler Working Status", JOptionPane.OK_CANCEL_OPTION
+					, JOptionPane.INFORMATION_MESSAGE, null, null, null);			
+			
 		}
 	}
+	
 	
 	private class BgPanel extends JPanel {
 	    Image bg = new ImageIcon("./images/gardenCopy3.jpg").getImage();

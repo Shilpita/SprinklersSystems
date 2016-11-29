@@ -26,10 +26,10 @@ public class Tester {
         										  , String startHr ,String startMin ,String endHr , String endMin){
 		
 			       InsertToSchedule insertSchedule = new InsertToSchedule();
-			       ArrayList<String> sprinkler	   = query.getAllSprinklers(con ,group);
+			       query.getAllSprinklers(con ,group);
 
 			       // Display elements and insert schedule per sprinkler in group 
-					for(String i : sprinkler) {
+					for(String i : QueryDB.sprinklerList) {
 								System.out.println(i);
 					           //insert schedule in Db
 					           insertSchedule.processInsertSchedQuery(con,scheduleName , i ,group ,waterFlow
@@ -45,10 +45,10 @@ public class Tester {
 				  , String startTime  ,String endTime ){
 				
 					InsertWaterConsumption insertWater = new InsertWaterConsumption();
-					ArrayList<String> sprinkler	   = query.getAllSprinklers(con ,group);
+					query.getAllSprinklers(con ,group);
 					
 					// Display elements and insert schedule per sprinkler in group 
-					for(String i : sprinkler) {
+					for(String i : QueryDB.sprinklerList) {
 					System.out.println(i);
 					//insert schedule in Db
 					insertWater.processInsertWaterQuery(con , i ,group 
@@ -62,19 +62,20 @@ public class Tester {
 				try {
 						connectDBCon     	 = new ConnectToDB();
 						con  				 = connectDBCon.openConnection();
-						QueryDB query 		 = new QueryDB();	
-						insertWaterForGroup(con, query,"North","LOW","01/01/2016","21:00","23:00");
-						insertWaterForGroup(con, query,"North","LOW","01/02/2016","21:00","23:00");
-						insertWaterForGroup(con, query,"North","LOW","01/03/2016","21:00","23:00");
-						insertWaterForGroup(con, query,"North","LOW","01/04/2016","21:00","23:00");
-						insertWaterForGroup(con, query,"North","LOW","01/05/2016","21:00","23:00");
-						insertWaterForGroup(con, query,"South","HIGH","01/01/2016","21:00","23:00");
-						insertWaterForGroup(con, query,"South","HIGH","01/02/2016","21:00","23:00");
-						insertWaterForGroup(con, query,"South","HIGH","01/03/2016","21:00","23:00");
-						insertWaterForGroup(con, query,"South","HIGH","01/04/2016","21:00","23:00");
-						insertWaterForGroup(con, query,"South","HIGH","01/05/2016","21:00","23:00");
-						insertWaterForGroup(con, query,"North","HIGH","02/01/2016","21:00","23:00");
-						insertWaterForGroup(con, query,"North","HIGH","03/01/2016","21:00","23:00");
+						
+//						QueryDB query 		 = new QueryDB();	
+//						insertWaterForGroup(con, query,"North","LOW","01/01/2016","21:00","23:00");
+//						insertWaterForGroup(con, query,"North","LOW","01/02/2016","21:00","23:00");
+//						insertWaterForGroup(con, query,"North","LOW","01/03/2016","21:00","23:00");
+//						insertWaterForGroup(con, query,"North","LOW","01/04/2016","21:00","23:00");
+//						insertWaterForGroup(con, query,"North","LOW","01/05/2016","21:00","23:00");
+//						insertWaterForGroup(con, query,"South","HIGH","01/01/2016","21:00","23:00");
+//						insertWaterForGroup(con, query,"South","HIGH","01/02/2016","21:00","23:00");
+//						insertWaterForGroup(con, query,"South","HIGH","01/03/2016","21:00","23:00");
+//						insertWaterForGroup(con, query,"South","HIGH","01/04/2016","21:00","23:00");
+//						insertWaterForGroup(con, query,"South","HIGH","01/05/2016","21:00","23:00");
+//						insertWaterForGroup(con, query,"North","HIGH","02/01/2016","21:00","23:00");
+//						insertWaterForGroup(con, query,"North","HIGH","03/01/2016","21:00","23:00");
 					  // insertScheduleForGroup(con ,query,"West"); //Insert schedule for group
 					 //activeSprinklerList = query.getActiveScheduleSprinklerGroup(con);//  , "North", "11/24/2016", "22:50");
 					//	System.out.println(activeSprinklerList.toString());

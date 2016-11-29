@@ -51,7 +51,7 @@ public class ScheduledGroup {
 
 	@Override
 	public String toString() {
-		return "ScheduledGroup [groups=" + groups + ", startTime=" + startTime + ", endTime=" + endTime + "]";
+		return "StartTime  =  " + startTime + "\t EndTime  = " + endTime + "\t Groups  = "+ groups +"\n";
 	}
 	
     

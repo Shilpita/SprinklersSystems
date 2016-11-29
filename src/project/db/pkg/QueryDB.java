@@ -14,11 +14,13 @@ import project.backend.pkg.*;
 
 public class QueryDB {
 	private ResultSet rs;
-	private ArrayList<String> sprinklerList; 
+	public static ArrayList<String> sprinklerList; 
+	public static HashMap<String,String> sprinklerStatusMap;
 	private DayAndTime dateTime;
 	//default Constructor
     public QueryDB(){
     	this.sprinklerList = new ArrayList<String>();
+    	this.sprinklerStatusMap = new HashMap<String,String>();
     	this.dateTime = new DayAndTime();
     }
   
@@ -29,20 +31,24 @@ public class QueryDB {
      * @param group
      * @return HashMap of 
      */
-    public ArrayList<String> getAllSprinklers(Connection con,String group){
+    public void getAllSprinklers(Connection con,String group){
 			try {
 							Statement stmt 	= con.createStatement();
-							rs				= stmt.executeQuery("SELECT SPRINKLERID "   
-																+ "FROM SPRINKLER_GROUP "
+							rs				= stmt.executeQuery("SELECT SPRINKLERID ,FUNCTIONALSTATUS"   
+																+ " FROM SPRINKLER_GROUP "
 																+ "WHERE LOCATION = '"+group+"'");
 							while ( rs.next() ) {
-								sprinklerList.add(rs.getString("SPRINKLERID"));    
+								//if(rs.getString("FUNCTIONALSTATUS") == "Working")
+										sprinklerList.add(rs.getString("SPRINKLERID")); 
+								
+								if(!sprinklerStatusMap.containsKey(rs.getString("SPRINKLERID"))){
+									sprinklerStatusMap.put(rs.getString("SPRINKLERID"), rs.getString("FUNCTIONALSTATUS"));
+								}
 				            }
 			    } catch ( SQLException e) {
 			    			e.printStackTrace();
 			    } 
 			
-		return sprinklerList;
     }
     
     /**
