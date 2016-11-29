@@ -189,50 +189,67 @@ public class SprinklerPanel extends JPanel implements Observer {
 	}
 
 	@Override
-	public void update(Observable o, Object arg) {
-		//Update based on schedule
+	public void update(Observable o, Object arg) {	
 		String message = (String) arg;
 		System.out.println(message);
-		String message2[] = message.split(":");
-		String groups[] = message2[1].split(" ");
-		if (message2[0].equalsIgnoreCase("ON")){
-			System.out.println("got notification to turn on");
-			for (String each: groups){
-				if (each.equalsIgnoreCase("North"))
-					try {turnOnNorthPanel();
-					System.out.println("in north");} 
-				catch (MalformedURLException e3) {e3.printStackTrace();}
-				if (each.equalsIgnoreCase("South"))
-					try {turnOnSouthPanel();
-					System.out.println("in south");} 
-				catch (MalformedURLException e2) {e2.printStackTrace();}
-				if (each.equalsIgnoreCase("East"))
-					try {turnOnEastPanel();
-					System.out.println("in east");} 
-				catch (MalformedURLException e1) {e1.printStackTrace();}
-				if (each.equalsIgnoreCase("West"))
-					try {turnOnWestPanel();
-					System.out.println("in west");} 
-				catch (MalformedURLException e) {e.printStackTrace();}
+		//Update based on temperature
+		if (message.equalsIgnoreCase("TOO HOT") || message.equalsIgnoreCase("TOO COLD")){
+			if (message.equalsIgnoreCase("TOO HOT")){
+				try {
+					turnOnEastPanel();
+					turnOnNorthPanel();
+					turnOnSouthPanel();
+					turnOnWestPanel();
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
 			}
+			if (message.equalsIgnoreCase("TOO COLD")){
+				turnOffEastPanel();
+				turnOffNorthPanel();
+				turnOffSouthPanel();
+				turnOffWestPanel();
+			}
+		}
+		//Update based on schedule
+		else {
+			String message2[] = message.split(":");
+			String groups[] = message2[1].split(" ");
+			if (message2[0].equalsIgnoreCase("ON")){
+				System.out.println("got notification to turn on");
+				for (String each: groups){
+					if (each.equalsIgnoreCase("North"))
+						try {turnOnNorthPanel();
+						System.out.println("in north");} 
+						catch (MalformedURLException e3) {e3.printStackTrace();}
+					if (each.equalsIgnoreCase("South"))
+						try {turnOnSouthPanel();
+						System.out.println("in south");} 
+						catch (MalformedURLException e2) {e2.printStackTrace();}
+					if (each.equalsIgnoreCase("East"))
+						try {turnOnEastPanel();
+						System.out.println("in east");} 
+						catch (MalformedURLException e1) {e1.printStackTrace();}
+					if (each.equalsIgnoreCase("West"))
+						try {turnOnWestPanel();
+						System.out.println("in west");} 
+						catch (MalformedURLException e) {e.printStackTrace();}
+				}
 			this.revalidate();
 			this.repaint();
-		}
-		if (message2[0].equalsIgnoreCase("OFF")){
-			System.out.println("got notification to turn off");
-			for (String each: groups){
-				if (each.equalsIgnoreCase("North")) turnOffNorthPanel(); 
-				if (each.equalsIgnoreCase("South"))	turnOffSouthPanel();
-				if (each.equalsIgnoreCase("East")) turnOffEastPanel();
-				if (each.equalsIgnoreCase("West"))	turnOffWestPanel();
 			}
-			this.revalidate();
-			this.repaint();
+			if (message2[0].equalsIgnoreCase("OFF")){
+				System.out.println("got notification to turn off");
+				for (String each: groups){
+					if (each.equalsIgnoreCase("North")) turnOffNorthPanel(); 
+					if (each.equalsIgnoreCase("South"))	turnOffSouthPanel();
+					if (each.equalsIgnoreCase("East")) turnOffEastPanel();
+					if (each.equalsIgnoreCase("West"))	turnOffWestPanel();
+				}
+				this.revalidate();
+				this.repaint();
+			}
 		}
-
-		//Update based on Temperature
-		//TODO
-
 	}
 
 /*	public static void main(String[] args) throws MalformedURLException{

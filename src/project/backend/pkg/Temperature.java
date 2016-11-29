@@ -31,18 +31,22 @@ public class Temperature extends Observable {
 
 	public void startNotifying(){
 		timer = new Timer();
-		timer.schedule(new TimerTask()
-		{
-			public void run() {
-				if (currTemperature>=max){
-					setChanged();
-					notifyObservers("TOO HOT");
-				}
-				if (currTemperature<=min){
-					setChanged();
-					notifyObservers("TOO COLD");
-				}
-			}} , 0, 1000);
+		TempNotifier sn = new TempNotifier();
+		timer.schedule(sn,0, 1000);
+	}
+	
+	//TODO
+	private class TempNotifier extends TimerTask{
+		public void run(){
+			if (currTemperature>=max){
+				setChanged();
+				notifyObservers("TOO HOT");
+			}
+			if (currTemperature<=min){
+				setChanged();
+				notifyObservers("TOO COLD");
+			}
+		}
 	}
 	
 	public void setMin(int min){

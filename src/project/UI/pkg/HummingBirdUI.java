@@ -79,6 +79,10 @@ public class HummingBirdUI {
 		
 		sb.addObserver(sprinklerPanel);
 		sb.startNotifying();
+		
+		temperature.addObserver(sprinklerPanel);
+		temperature.startNotifying();
+		
 	}
 
 	public void initializeMapPanel() throws MalformedURLException {
