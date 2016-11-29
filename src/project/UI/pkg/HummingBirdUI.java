@@ -10,6 +10,7 @@ import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.imageio.ImageIO;
@@ -19,7 +20,10 @@ import javax.swing.border.TitledBorder;
 
 import project.backend.pkg.*;
 import project.db.pkg.ConnectToDB;
+import project.db.pkg.InsertToSchedule;
 import project.db.pkg.QueryDB;
+import project.graph.pkg.GroupBarchart;
+import project.graph.pkg.MonthlyBarchart;
 
 
 
@@ -44,9 +48,11 @@ public class HummingBirdUI {
 	private Temperature temperature;
 	private ScheduleBank sb;
 	private SprinklerPanel sprinklerPanel;
-	
+	private DayAndTime dayTime;
 
-	
+	private static String startTime = null;
+	private static String endTime = null;
+	private static String todayDate = null;
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -62,6 +68,7 @@ public class HummingBirdUI {
 		temperature = new Temperature();
 		sb = new ScheduleBank();
 		sprinklerPanel = new SprinklerPanel();
+		dayTime = new DayAndTime();
 		
 		frame = new JFrame("HummingBee Home Garden Sprinkler System");
 		frame.setExtendedState( frame.getExtendedState()|JFrame.MAXIMIZED_BOTH );
@@ -206,53 +213,86 @@ public class HummingBirdUI {
 	}
 	
 	private class NorthOnDemand implements ActionListener{
-		String startTime = ScheduleBank.getCurrentTimeStamp();
-		
 		public void actionPerformed(ActionEvent e) {
+			//String startTime = dayTime.getTimeToString(Calendar.getInstance());   //ScheduleBank.getCurrentTimeStamp();
+			todayDate = dayTime.getFormattedDatetoString(new SimpleDateFormat("MM/dd/yyyy"));
 			if (n.isSelected()==true){
-				
+				startTime =  dayTime.getTimeToString(Calendar.getInstance());  //ScheduleBank.getCurrentTimeStamp();
 				try {sprinklerPanel.turnOnNorthPanel();} 
 				catch (MalformedURLException e1) {e1.printStackTrace();}
 			}
+			//String endTime =dayTime.getTimeToString(Calendar.getInstance()); //ScheduleBank.getCurrentTimeStamp();
 			if (n.isSelected()==false){
-				
+				endTime =  dayTime.getTimeToString(Calendar.getInstance());   //ScheduleBank.getCurrentTimeStamp();
 				sprinklerPanel.turnOffNorthPanel();
+				InsertToSchedule insertSchedule = new InsertToSchedule();
+				insertSchedule.processInsertSchedQuery( "ON DEMAND" ,"North"
+				  ,  "LOW" ,  todayDate , todayDate
+				  ,  startTime.substring(0, 2), startTime.substring(3) , endTime.substring(0, 2) ,  endTime.substring(3)); //Insert schedule for group
+				
 			}
+			
+			
 		}
 	}
 	
 	private class SouthOnDemand implements ActionListener{
 		public void actionPerformed(ActionEvent e) {
+			todayDate = dayTime.getFormattedDatetoString(new SimpleDateFormat("MM/dd/yyyy"));
 			if (s.isSelected()==true){
+				startTime =  dayTime.getTimeToString(Calendar.getInstance());
 				try {sprinklerPanel.turnOnSouthPanel();} 
 				catch (MalformedURLException e1) {e1.printStackTrace();}
 			}
 			if (s.isSelected()==false){
+				endTime =  dayTime.getTimeToString(Calendar.getInstance());   //ScheduleBank.getCurrentTimeStamp
 				sprinklerPanel.turnOffSouthPanel();
+				InsertToSchedule insertSchedule = new InsertToSchedule();
+				insertSchedule.processInsertSchedQuery( "ON DEMAND" ,"South"
+				  ,  "LOW" ,  todayDate , todayDate
+				  ,  startTime.substring(0, 2), startTime.substring(3) , endTime.substring(0, 2) ,  endTime.substring(3)); //Insert schedule for group
+				
 			}
+			
 		}
 	}
 	
 	private class EastOnDemand implements ActionListener{
 		public void actionPerformed(ActionEvent e2) {
+			todayDate = dayTime.getFormattedDatetoString(new SimpleDateFormat("MM/dd/yyyy"));
 			if (e.isSelected()==true){
+				startTime =  dayTime.getTimeToString(Calendar.getInstance());
 				try {sprinklerPanel.turnOnEastPanel();} 
 				catch (MalformedURLException e1) {e1.printStackTrace();}
 			}
 			if (e.isSelected()==false){
+				endTime =  dayTime.getTimeToString(Calendar.getInstance()); 
 				sprinklerPanel.turnOffEastPanel();
+				InsertToSchedule insertSchedule = new InsertToSchedule();
+				insertSchedule.processInsertSchedQuery( "ON DEMAND" ,"East"
+				  ,  "LOW" ,  todayDate , todayDate
+				  ,  startTime.substring(0, 2), startTime.substring(3) , endTime.substring(0, 2) ,  endTime.substring(3)); //Insert schedule for group
+				
 			}
 		}
 	}
 	
 	private class WestOnDemand implements ActionListener{
 		public void actionPerformed(ActionEvent e) {
+			todayDate = dayTime.getFormattedDatetoString(new SimpleDateFormat("MM/dd/yyyy"));
 			if (w.isSelected()==true){
+				startTime =  dayTime.getTimeToString(Calendar.getInstance());
 				try {sprinklerPanel.turnOnWestPanel();} 
 				catch (MalformedURLException e1) {e1.printStackTrace();}
 			}
 			if (w.isSelected()==false){
+				endTime =  dayTime.getTimeToString(Calendar.getInstance()); 
 				sprinklerPanel.turnOffWestPanel();
+				InsertToSchedule insertSchedule = new InsertToSchedule();
+				insertSchedule.processInsertSchedQuery( "ON DEMAND" ,"West"
+				  ,  "LOW" ,  todayDate , todayDate
+				  ,  startTime.substring(0, 2), startTime.substring(3) , endTime.substring(0, 2) ,  endTime.substring(3)); //Insert schedule for group
+				
 			}
 		}
 	}
@@ -356,16 +396,22 @@ public class HummingBirdUI {
 	
 	private class BtnByGroup implements ActionListener{
 		public void actionPerformed(ActionEvent e) {
-			//TODO
-			JOptionPane.showMessageDialog(null, "BYGRP");
+			Calendar cal = Calendar.getInstance();
+			String month = dayTime.getMonthList()[cal.get(Calendar.MONTH)];
+			System.out.println("Month"+month);
+			GroupBarchart gb = new GroupBarchart("Water Consumption by Month" ,month);
+			int input = JOptionPane.showOptionDialog(null, gb.panel, "Water consumption by Month", JOptionPane.OK_CANCEL_OPTION
+					, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+			//JOptionPane.showMessageDialog(null, "BYGRP");
 			group.clearSelection();
 		}		
 	}
 	
 	private class BtnByMonth implements ActionListener{
 		public void actionPerformed(ActionEvent e) {
-			//TODO
-			JOptionPane.showMessageDialog(null, "BYMONTH");
+			MonthlyBarchart mb = new MonthlyBarchart("Monthly BarChart");
+			int input = JOptionPane.showOptionDialog(null, mb.panel, "Water consumption by Month", JOptionPane.OK_CANCEL_OPTION
+					, JOptionPane.INFORMATION_MESSAGE, null, null, null);
 			group.clearSelection();
 		}
 	}
@@ -437,7 +483,8 @@ public class HummingBirdUI {
 					for(String i:group){
 								System.out.println(scheduleName +" "+startDate+" "+ endDate+" "+startTimeHr+" "+ startTimeMin
 								+ " "+ endTimeHr + " " + endTimeMin+" "+ i);
-								cs.insertScheduleForGroup( i ,  scheduleName
+								InsertToSchedule insertSchedule = new InsertToSchedule();
+								insertSchedule.processInsertSchedQuery( scheduleName ,i
 								  ,  waterConfig.toUpperCase() ,  startDate , endDate
 								  ,  startTimeHr , startTimeMin , endTimeHr ,  endTimeMin); //Insert schedule for group
 					 }
@@ -467,13 +514,15 @@ public class HummingBirdUI {
 			 panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 			 panel.setPreferredSize(new Dimension(500, 200));
 			 panel.setBorder(new TitledBorder("Todays Schedules"));
-				
+			 System.out.println(sb.getScheduleGroupList().size());
 					for(ScheduledGroup i : sb.getScheduleGroupList()){
-						if(!schedule.contains(new JLabel(i.toString()))){
-							schedule.add(new JLabel(i.toString()));
-							panel.add(new JLabel(i.toString()));
-						}
+						JLabel l = new JLabel(i.toString()); 
+							if(!schedule.contains(l)){
+							  schedule.add(l);
+							  panel.add(l);
+							} 
 					}
+					
 			
 			int input = JOptionPane.showOptionDialog(null, panel, "Sprinkler Working Status", JOptionPane.OK_CANCEL_OPTION
 					, JOptionPane.INFORMATION_MESSAGE, null, null, null);			

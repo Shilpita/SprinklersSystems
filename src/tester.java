@@ -32,7 +32,7 @@ public class Tester {
 					for(String i : QueryDB.sprinklerList) {
 								System.out.println(i);
 					           //insert schedule in Db
-					           insertSchedule.processInsertSchedQuery(con,scheduleName , i ,group ,waterFlow
+					           insertSchedule.processInsertSchedQuery(scheduleName ,group ,waterFlow
 								   									 ,startDate, endDate
 								   									 ,startHr, startMin
 								   									 ,endHr, endMin );

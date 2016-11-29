@@ -160,9 +160,9 @@ public class ConfigureSchedule {
 		panelWaterFlow.add(high);
 		panel.add(panelWaterFlow);
 	}	
-
+/*
     public void insertScheduleForGroup(String group , String scheduleName
-			  , String waterFlow , String startDate ,String endTime
+			  , String waterFlow , String startDate ,String endDate
 			  , String startHr ,String startMin ,String endHr , String endMin){
     	
     			System.out.println("inside insert schedule for group"+ group);
@@ -179,7 +179,7 @@ public class ConfigureSchedule {
 							System.out.println(i);
 							//insert schedule in Db
 							insertSchedule.processInsertSchedQuery(con,scheduleName , i ,group ,waterFlow
-																 ,startDate, endTime
+																 ,startDate, endDate
 																 ,startHr, startMin
 																 ,endHr, endMin );
 					}
@@ -192,7 +192,7 @@ public class ConfigureSchedule {
 					   connectDBCon.closeConnection(con);
 				}
 	}//end insert schedule method
-	
+	*/
 	public String getStartDateField(){
 		return startDateField.getText();
 	}

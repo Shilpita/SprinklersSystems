@@ -21,6 +21,9 @@ public class InsertToSchedule {
 	private PreparedStatement preparedStatement ;
 	private String insertStmt ;
 	private DayAndTime dateTime;
+	private  ConnectToDB connectDBCon ;
+	private  Connection con ;
+	private QueryDB query;
 	
 	/**
 	 * Default Constructor 
@@ -99,31 +102,51 @@ public class InsertToSchedule {
 	 */
 	
 	
-    public void processInsertSchedQuery(Connection con,String scheduleName , String sprinkler, String group,String waterflow
+    public void processInsertSchedQuery(String scheduleName ,  String group,String waterflow
     									,String startDate, String endDate 
     									,String startHrTime, String startMinTime
     									, String endHrTime, String endMinTime )
     {	
 								String startTime = dateTime.getTimeString(startHrTime,startMinTime);
 								String endTime = dateTime.getTimeString(endHrTime,endMinTime);
-								long totalTime = dateTime.getTotalTime(startTime,endTime,TimeUnit.HOURS,new SimpleDateFormat("hh:mm"));
+								long totalTime = dateTime.getTotalTime(startTime,endTime,TimeUnit.MINUTES,new SimpleDateFormat("hh:mm"));
 								///if the start or end time is midnight or midday then convert to positive difference hours
 								if(totalTime < 0) 
 									totalTime = 12 + totalTime;
+								else if(totalTime == 0)
+									totalTime = 1 + totalTime;
 								long totalDays = dateTime.getTotalTime(startDate,endDate,TimeUnit.DAYS,new SimpleDateFormat("MM/dd/yyyy"))+1;
 								String[] str =  startDate.split("/");
 								String month = dateTime.getMonthList()[Integer.parseInt(str[0])-1];
 								
 								long totalWaterConsumption = WaterFlow.getTotalWaterConsumption(waterflow,totalTime,totalDays);
- 
-
-								
-								this.insertScheduleRow(con, scheduleName, sprinkler, group
-													  ,startDate, endDate ,month
-													  ,startTime, endTime
-													  ,totalTime,totalDays, totalWaterConsumption,waterflow);
-										
+								try {
+									connectDBCon     	 = new ConnectToDB();
+									con  				 = connectDBCon.openConnection();
+								    query 				 = new QueryDB();
+									//ArrayList<String> sprinkler	   = query.getAllSprinklers(con ,group);
+								    query.getAllSprinklers(con ,group);
+									//System.out.println(sprinkler);
+								 // Display elements and insert schedule per sprinkler in group 
+									for(String i : QueryDB.sprinklerList) {
+											System.out.println(i);
+											//insert schedule in Db
+											this.insertScheduleRow(con, scheduleName, i, group
+															  ,startDate, endDate ,month
+															  ,startTime, endTime
+															  ,totalTime,totalDays, totalWaterConsumption,waterflow);
+									}
+								} catch (ClassNotFoundException ex) {
+									ex.printStackTrace();
+								} catch (SQLException ex) {
+									ex.printStackTrace();
+								}finally {
+								if (con != null)
+									   connectDBCon.closeConnection(con);
+								}
 				
 	}//end insert method
+    
+    
 	
 }

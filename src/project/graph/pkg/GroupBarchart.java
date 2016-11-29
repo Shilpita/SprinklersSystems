@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.swing.JPanel;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -28,19 +30,21 @@ import project.backend.pkg.WaterConsumptionLog;
 import project.db.pkg.ConnectToDB;
 import project.db.pkg.QueryDB;
 
-public class GroupBarchart extends ApplicationFrame {
+public class GroupBarchart   {
+	public static JPanel panel;
 	private static  ConnectToDB connectDBCon ;
 	private static Connection con ;
 	private static QueryDB query ;
 	private static ArrayList<WaterConsumptionLog> waterLogList;
 
-    public GroupBarchart(final String title) {
-        super(title);
+    public GroupBarchart(final String title,String month) {
+    	panel = new JPanel();
         waterLogList = new ArrayList<WaterConsumptionLog>();
         try {
 			connectDBCon = new ConnectToDB();
 			con          = connectDBCon.openConnection();
 			query		 = new QueryDB();
+			showGroupChart(month);
 		} catch (ClassNotFoundException | SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -53,7 +57,8 @@ public class GroupBarchart extends ApplicationFrame {
      * @return The dataset.
      */
     private static CategoryDataset createGroupDataset(String month) {
-        waterLogList  	= query.getWaterConsumpByGroup(con, month);
+        //waterLogList  	= query.getWaterConsumpByGroup(con, month);
+    	waterLogList  	= query.getWaterConsumpByGroupSched(con, month);
         connectDBCon.closeConnection(con);
         DefaultCategoryDataset datasetGroup = new DefaultCategoryDataset();
         for(WaterConsumptionLog k : waterLogList)
@@ -116,19 +121,19 @@ public class GroupBarchart extends ApplicationFrame {
      * Starting point for the demonstration application.
      *
      * @param args  ignored.
+     * @return 
      */
-    public static void main(final String[] args) {
-
-        GroupBarchart demo = new GroupBarchart("Water Consumption by Month");
-        CategoryDataset dataset = createGroupDataset("JAN");
+  //  public static void main(final String[] args) {
+    public  void showGroupChart(String month){
+       // GroupBarchart demo = new GroupBarchart("Water Consumption by Month");
+        CategoryDataset dataset = createGroupDataset(month);
         JFreeChart chart = createGroupChart(dataset);
         ChartPanel chartPanel = new ChartPanel(chart);
         chartPanel.setPreferredSize(new Dimension(500, 500));
-        demo.setContentPane(chartPanel);
-        demo.pack();
-        RefineryUtilities.centerFrameOnScreen(demo);
-        demo.setVisible(true);
-
+        panel.add(chartPanel);
+        //demo.pack();
+        //RefineryUtilities.centerFrameOnScreen(demo);
+       // demo.setVisible(true);
     }
 
 }

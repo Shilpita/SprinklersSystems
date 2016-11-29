@@ -38,7 +38,7 @@ public class ScheduleBank extends Observable {
 						con  				 = connectDBCon.openConnection();
 						QueryDB query 		 = new QueryDB();
 						todaysScheduleList 	 = query.getActiveScheduleSprinklerGroup(con);//  , "North", "11/24/2016", "22:50");
-						System.out.println(todaysScheduleList.toString());
+						System.out.println("todays sched list size "+todaysScheduleList.size());
 				} catch (ClassNotFoundException | SQLException e) {
 				e.printStackTrace();
 			}finally{
@@ -58,7 +58,7 @@ public class ScheduleBank extends Observable {
 	}
 	
 	public void getScheduledGroupList(){
-		ArrayList<ScheduledGroup> resultList = new ArrayList<ScheduledGroup>();
+		ArrayList<ScheduledGroup> resultList = scheduleGroupList;  //new ArrayList<ScheduledGroup>();
 		if(todaysScheduleList.size() >0){
 					ScheduledGroup tempSG = new ScheduledGroup(todaysScheduleList.get(0).getSprinklerGroup()
 															,todaysScheduleList.get(0).getStartTime()
@@ -69,15 +69,18 @@ public class ScheduleBank extends Observable {
 							   tempSG.setGroups(tempSG.getGroups()+" "+ todaysScheduleList.get(i).getSprinklerGroup());	
 							}
 						else{
-							scheduleGroupList.add(tempSG);
-								tempSG =  new ScheduledGroup(todaysScheduleList.get(i).getSprinklerGroup()
+							if(!scheduleGroupList.contains(tempSG))
+								scheduleGroupList.add(tempSG);
+							tempSG =  new ScheduledGroup(todaysScheduleList.get(i).getSprinklerGroup()
 										,todaysScheduleList.get(i).getStartTime()
 										, todaysScheduleList.get(i).getEndTime()); 
 						}	
 					}
-					scheduleGroupList.add(tempSG);
-					System.out.println("getScheduledGroupList");
-					scheduleGroupList.toString();
+					if(!scheduleGroupList.contains(tempSG))
+					     scheduleGroupList.add(tempSG);
+					
+					System.out.println("getScheduledGroupList"+ scheduleGroupList.size() );
+					//scheduleGroupList.toString();
 		}
 		/*	
 		ScheduledGroup one = new ScheduledGroup("N S", "20:14", "20:15");

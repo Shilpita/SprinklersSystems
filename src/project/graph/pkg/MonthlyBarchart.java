@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.swing.JPanel;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -28,19 +30,22 @@ import project.backend.pkg.WaterConsumptionLog;
 import project.db.pkg.ConnectToDB;
 import project.db.pkg.QueryDB;
 
-public class MonthlyBarchart extends ApplicationFrame {
+public class MonthlyBarchart  {
+	public JPanel panel;
 	private static  ConnectToDB connectDBCon ;
 	private static Connection con ;
 	private static QueryDB query ;
 	private static ArrayList<WaterConsumptionLog> waterLogList;
 
     public MonthlyBarchart(final String title) {
-        super(title);
+       // super(title);
+    	panel = new JPanel();
         waterLogList = new ArrayList<WaterConsumptionLog>();
         try {
 			connectDBCon = new ConnectToDB();
 			con          = connectDBCon.openConnection();
 			query		 = new QueryDB();
+			displayMonthyChart();
 		} catch (ClassNotFoundException | SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -54,7 +59,7 @@ public class MonthlyBarchart extends ApplicationFrame {
      */
     private static CategoryDataset createDataset() {
 
-        waterLogList  	= query.getMonthlyWaterConsump(con);
+        waterLogList  	= query.getMonthlyWaterConsumpSched(con);
         connectDBCon.closeConnection(con);
         DayAndTime dayTime  = new DayAndTime();
         // create the dataset...
@@ -134,17 +139,18 @@ public class MonthlyBarchart extends ApplicationFrame {
      * Starting point for the demonstration application.
      * @param args  ignored.
      */
-    public static void main(final String[] args) {
-
-        MonthlyBarchart demo = new MonthlyBarchart("Monthly BarChart");
+    public void displayMonthyChart(){      //main(final String[] args) {
+    
+       // MonthlyBarchart demo = new MonthlyBarchart("Monthly BarChart");
         CategoryDataset dataset = createDataset();
         JFreeChart chart = createChart(dataset);
         ChartPanel chartPanel = new ChartPanel(chart);
         chartPanel.setPreferredSize(new Dimension(500, 500));
-        demo.setContentPane(chartPanel);
-        demo.pack();
-        RefineryUtilities.centerFrameOnScreen(demo);
-        demo.setVisible(true);
+        panel.add(chartPanel);
+        //demo.setContentPane(chartPanel);
+       // demo.pack();
+       // RefineryUtilities.centerFrameOnScreen(demo);
+       // demo.setVisible(true);
     }
 
 }

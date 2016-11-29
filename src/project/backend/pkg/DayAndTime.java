@@ -17,6 +17,7 @@ public class DayAndTime {
     private Date date;
     private Time startTime;
     private Time endTime;
+    
 	private String[] monthList = {	"JAN"
 									,"FEB"
 									,"MAR"
@@ -28,7 +29,7 @@ public class DayAndTime {
 									,"SEP"
 									,"OCT"
 									,"NOV"
-									,"DEC" };
+									,"DEC" }; 
     
     public DayAndTime(){
         this.day = "";
@@ -123,8 +124,8 @@ public class DayAndTime {
      * @param currentDate
      * @return formated date string eg. 11-DEC-16
      */
-    public String  getFormattedDatetoString() { 
-    	SimpleDateFormat newFormat=new SimpleDateFormat("dd-MMM-yy");
+    public String  getFormattedDatetoString(SimpleDateFormat newFormat) { 
+    	//SimpleDateFormat newFormat=new SimpleDateFormat("dd-MMM-yy");
     	String formatedCurrentDate = null;
 
 		                Calendar c = Calendar.getInstance();
@@ -173,20 +174,8 @@ public class DayAndTime {
         
         return isStartSprinkler;
     }
-	/*
-	public boolean checkToStartSprinkler(Calendar startTime,Calendar endTime){ //throws ParseException {
-        boolean isStartSprinkler = false;
-     //   Calendar calStart = getStringToTime(startTime);
-     //   Calendar calEnd = getStringToTime(endTime);
-        if (Calendar.getInstance().after(startTime) && Calendar.getInstance().before(endTime)) {
-            System.out.println("start sprinkler");
-            isStartSprinkler = true;
-        } else {
-            System.out.println("Do not start sprinkler");
-        } 
-        return isStartSprinkler;
-    }
-	*/
+
+
 	public String[] getMonthList() {
 		return monthList;
 	}

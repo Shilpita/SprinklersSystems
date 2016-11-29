@@ -57,7 +57,7 @@ public class QueryDB {
      * @return List of sprinkler to be activated
      */
     public ArrayList<Schedule> getActiveScheduleSprinklerGroup(Connection con ){ 
-    	String todayDate = dateTime.getFormattedDatetoString().toUpperCase() ;
+    	String todayDate = dateTime.getFormattedDatetoString(new SimpleDateFormat("dd-MMM-yy")).toUpperCase() ;
     //	System.out.println(todayDate);
     	ArrayList<Schedule> todaysScheduleList = new ArrayList<Schedule>();
     	try{
@@ -74,39 +74,7 @@ public class QueryDB {
     	} 
     	return todaysScheduleList;
     }
-    
-    /**
-     * Query to get active schedule list for current date and time
-     * @param con
-     * @return List of sprinkler to be activated
-     */
-    /**
-    public ArrayList<Schedule> getActiveScheduleSprinklerList(Connection con ){ 
-    	String todayDate = dateTime.getFormattedDatetoString().toUpperCase() ;
-    	System.out.println(todayDate);
-    	ArrayList<Schedule> todaysScheduleSprinklerList = new ArrayList<Schedule>();
-    	try{
-    			Statement stmt 	= con.createStatement();
-    			rs				= stmt.executeQuery("SELECT SPRINKLERID,LOCATION,SCHEDULESTARTDATE,SCHEDULEENDDATE,STARTTIME,ENDTIME,WATERFLOW  FROM SPRINKLER_SCHEDULE" 
-    												+" WHERE "  
-    												+"SCHEDULESTARTDATE <= '"+ todayDate
-    												+"' AND SCHEDULEENDDATE >= '"+ todayDate +"'");
-    			while(rs.next()){
-    			//	boolean flag = dateTime.checkToStartSprinkler(rs.getString("STARTTIME"),rs.getString("ENDTIME"));
-    				if(!todaysScheduleSprinklerList.contains(rs.getString("SPRINKLERID")))
-    					todaysScheduleSprinklerList.add(new Schedule(rs.getString("SCHEDULESTARTDATE")
-    															  , rs.getString("SCHEDULEENDDATE")
-    															  , rs.getString("STARTTIME"), rs.getString("ENDTIME")
-    															  , rs.getString("SPRINKLERID")));
-    						
-    			}
-    	} catch ( SQLException e) {
-			e.printStackTrace();
-    	} 
-    	return todaysScheduleSprinklerList;
-    }
-    
-    */
+
     
     /**
      * Query the water consumed per month by each group.
@@ -159,55 +127,108 @@ public class QueryDB {
     	return waterLogList;
     }
     
-    /**
-     * Query the water consumed per month by each group.
-     * @param con
-     * @return List of water consumption per month for each group
-     */
-
-    public ArrayList<WaterConsumptionLog> getMonthlyWaterConsump(Connection con){
-    	ArrayList<WaterConsumptionLog> waterLogList = new ArrayList<WaterConsumptionLog>();
-    	try{
-    			Statement stmt 	= con.createStatement();
-    			rs				= stmt.executeQuery("SELECT SCHEDULEMONTH , LOCATION, SUM(TOTALWATERCONSUMPTION) AS TOTALWATERPERMONTH"
-    												+" FROM WATER_CONSUMPTION"
-    												+" GROUP BY SCHEDULEMONTH,LOCATION"
-    												+" ORDER BY LOCATION");
-    			while(rs.next()){
-    					waterLogList.add(new WaterConsumptionLog(rs.getString("LOCATION")
-    															,rs.getString("SCHEDULEMONTH")
-    															,Long.parseLong(rs.getString("TOTALWATERPERMONTH"))));	
-    			}
-    	} catch ( SQLException e) {
-			e.printStackTrace();
-    	} 
-    	return waterLogList;
-    }
-    
-    /**
-     * Query the water consumed for given month by each group.
-     * @param con
-     * @param month
-     * @return List of water consumption per month for each group
-     */
-    
-    public ArrayList<WaterConsumptionLog> getWaterConsumpByGroup(Connection con ,String month){
-    	ArrayList<WaterConsumptionLog> waterLogList = new ArrayList<WaterConsumptionLog>();
-    	try{
-    			Statement stmt 	= con.createStatement();
-    			rs				= stmt.executeQuery("SELECT LOCATION, SUM(TOTALWATERCONSUMPTION) AS TOTALWATERPERMONTH"
-    												+" FROM WATER_CONSUMPTION WHERE SCHEDULEMONTH = '"+ month+"'"
-    												+" GROUP BY LOCATION"
-    												+" ORDER BY LOCATION");
-    			while(rs.next()){
-    					waterLogList.add(new WaterConsumptionLog(rs.getString("LOCATION")
-    															,month   //rs.getString("SCHEDULEMONTH")
-    															,Long.parseLong(rs.getString("TOTALWATERPERMONTH"))));	
-    			}
-    	} catch ( SQLException e) {
-			e.printStackTrace();
-    	} 
-    	return waterLogList;
-    }
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/////////////////////***********NOT IN USE **************///////////////////////////////////////
+
+/*
+ * Query to get active schedule list for current date and time
+ * @param con
+ * @return List of sprinkler to be activated
+ */
+
+/*
+public ArrayList<Schedule> getActiveScheduleSprinklerList(Connection con ){ 
+	String todayDate = dateTime.getFormattedDatetoString().toUpperCase() ;
+	System.out.println(todayDate);
+	ArrayList<Schedule> todaysScheduleSprinklerList = new ArrayList<Schedule>();
+	try{
+			Statement stmt 	= con.createStatement();
+			rs				= stmt.executeQuery("SELECT SPRINKLERID,LOCATION,SCHEDULESTARTDATE,SCHEDULEENDDATE,STARTTIME,ENDTIME,WATERFLOW  FROM SPRINKLER_SCHEDULE" 
+												+" WHERE "  
+												+"SCHEDULESTARTDATE <= '"+ todayDate
+												+"' AND SCHEDULEENDDATE >= '"+ todayDate +"'");
+			while(rs.next()){
+			//	boolean flag = dateTime.checkToStartSprinkler(rs.getString("STARTTIME"),rs.getString("ENDTIME"));
+				if(!todaysScheduleSprinklerList.contains(rs.getString("SPRINKLERID")))
+					todaysScheduleSprinklerList.add(new Schedule(rs.getString("SCHEDULESTARTDATE")
+															  , rs.getString("SCHEDULEENDDATE")
+															  , rs.getString("STARTTIME"), rs.getString("ENDTIME")
+															  , rs.getString("SPRINKLERID")));
+						
+			}
+	} catch ( SQLException e) {
+		e.printStackTrace();
+	} 
+	return todaysScheduleSprinklerList;
+}
+
+*/
+
+
+
+/*
+ * Query the water consumed per month by each group.
+ * @param con
+ * @return List of water consumption per month for each group
+ */
+/*
+public ArrayList<WaterConsumptionLog> getMonthlyWaterConsump(Connection con){
+	ArrayList<WaterConsumptionLog> waterLogList = new ArrayList<WaterConsumptionLog>();
+	try{
+			Statement stmt 	= con.createStatement();
+			rs				= stmt.executeQuery("SELECT SCHEDULEMONTH , LOCATION, SUM(TOTALWATERCONSUMPTION) AS TOTALWATERPERMONTH"
+												+" FROM WATER_CONSUMPTION"
+												+" GROUP BY SCHEDULEMONTH,LOCATION"
+												+" ORDER BY LOCATION");
+			while(rs.next()){
+					waterLogList.add(new WaterConsumptionLog(rs.getString("LOCATION")
+															,rs.getString("SCHEDULEMONTH")
+															,Long.parseLong(rs.getString("TOTALWATERPERMONTH"))));	
+			}
+	} catch ( SQLException e) {
+		e.printStackTrace();
+	} 
+	return waterLogList;
+}
+
+/**
+ * Query the water consumed for given month by each group.
+ * @param con
+ * @param month
+ * @return List of water consumption per month for each group
+ */
+/*  
+public ArrayList<WaterConsumptionLog> getWaterConsumpByGroup(Connection con ,String month){
+	ArrayList<WaterConsumptionLog> waterLogList = new ArrayList<WaterConsumptionLog>();
+	try{
+			Statement stmt 	= con.createStatement();
+			rs				= stmt.executeQuery("SELECT LOCATION, SUM(TOTALWATERCONSUMPTION) AS TOTALWATERPERMONTH"
+												+" FROM WATER_CONSUMPTION WHERE SCHEDULEMONTH = '"+ month+"'"
+												+" GROUP BY LOCATION"
+												+" ORDER BY LOCATION");
+			while(rs.next()){
+					waterLogList.add(new WaterConsumptionLog(rs.getString("LOCATION")
+															,month   //rs.getString("SCHEDULEMONTH")
+															,Long.parseLong(rs.getString("TOTALWATERPERMONTH"))));	
+			}
+	} catch ( SQLException e) {
+		e.printStackTrace();
+	} 
+	return waterLogList;
+}
+*/
