@@ -58,25 +58,26 @@ public class ScheduleBank extends Observable {
 	}
 	
 	public void getScheduledGroupList(){
-		ArrayList<ScheduledGroup> resultList = scheduleGroupList;  //new ArrayList<ScheduledGroup>();
+		scheduleGroupList = new ArrayList<ScheduledGroup>();
 		if(todaysScheduleList.size() >0){
 					ScheduledGroup tempSG = new ScheduledGroup(todaysScheduleList.get(0).getSprinklerGroup()
 															,todaysScheduleList.get(0).getStartTime()
 															, todaysScheduleList.get(0).getEndTime());
+					
 					for(int i = 1 ; i< todaysScheduleList.size(); i++){
 						if(tempSG.getStartTime().equals(dayTime.getTimeToString(todaysScheduleList.get(i).getStartTime()))
 							&& tempSG.getEndTime().equals(dayTime.getTimeToString(todaysScheduleList.get(i).getEndTime()))){
 							   tempSG.setGroups(tempSG.getGroups()+" "+ todaysScheduleList.get(i).getSprinklerGroup());	
 							}
 						else{
-							if(!scheduleGroupList.contains(tempSG))
+							//if(!scheduleGroupList.contains(tempSG))
 								scheduleGroupList.add(tempSG);
 							tempSG =  new ScheduledGroup(todaysScheduleList.get(i).getSprinklerGroup()
 										,todaysScheduleList.get(i).getStartTime()
 										, todaysScheduleList.get(i).getEndTime()); 
 						}	
 					}
-					if(!scheduleGroupList.contains(tempSG))
+					//if(!scheduleGroupList.contains(tempSG))
 					     scheduleGroupList.add(tempSG);
 					
 					System.out.println("getScheduledGroupList"+ scheduleGroupList.size() );
