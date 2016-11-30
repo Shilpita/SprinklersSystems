@@ -191,7 +191,7 @@ public class SprinklerPanel extends JPanel implements Observer {
 	@Override
 	public void update(Observable o, Object arg) {	
 		String message = (String) arg;
-		System.out.println(message);
+		/*System.out.println(message);
 		//Update based on temperature
 		if (message.equalsIgnoreCase("TOO HOT") || message.equalsIgnoreCase("TOO COLD")){
 			if (message.equalsIgnoreCase("TOO HOT")){
@@ -210,9 +210,9 @@ public class SprinklerPanel extends JPanel implements Observer {
 				turnOffSouthPanel();
 				turnOffWestPanel();
 			}
-		}
+		}*/
 		//Update based on schedule
-		else {
+		//else {
 			String message2[] = message.split(":");
 			String groups[] = message2[1].split(" ");
 			if (message2[0].equalsIgnoreCase("ON")){
@@ -249,7 +249,7 @@ public class SprinklerPanel extends JPanel implements Observer {
 				this.revalidate();
 				this.repaint();
 			}
-		}
+		//}
 	}
 
 /*	public static void main(String[] args) throws MalformedURLException{

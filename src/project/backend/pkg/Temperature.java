@@ -6,7 +6,8 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Temperature extends Observable {
+//public class Temperature extends Observable {
+public class Temperature {
 	private int min;
 	private int max;
 	private int currTemperature;
@@ -29,25 +30,25 @@ public class Temperature extends Observable {
 		this.currTemperature = currTemperature;
 	}
 
-	public void startNotifying(){
-		timer = new Timer();
-		TempNotifier sn = new TempNotifier();
-		timer.schedule(sn,0, 1000);
-	}
-	
-	//TODO
-	private class TempNotifier extends TimerTask{
-		public void run(){
-			if (currTemperature>=max){
-				setChanged();
-				notifyObservers("TOO HOT");
-			}
-			if (currTemperature<=min){
-				setChanged();
-				notifyObservers("TOO COLD");
-			}
-		}
-	}
+//	public void startNotifying(){
+//		timer = new Timer();
+//		TempNotifier sn = new TempNotifier();
+//		timer.schedule(sn,0, 1000);
+//	}
+//	
+//	//TODO
+//	private class TempNotifier extends TimerTask{
+//		public void run(){
+//			if (currTemperature>=max){
+//				setChanged();
+//				notifyObservers("TOO HOT");
+//			}
+//			if (currTemperature<=min){
+//				setChanged();
+//				notifyObservers("TOO COLD");
+//			}
+//		}
+//	}
 	
 	public void setMin(int min){
 		this.min=min;

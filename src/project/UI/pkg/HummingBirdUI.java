@@ -87,8 +87,17 @@ public class HummingBirdUI {
 		sb.addObserver(sprinklerPanel);
 		sb.startNotifying();
 		
-		temperature.addObserver(sprinklerPanel);
-		temperature.startNotifying();
+		//System.out.println("here");
+		
+		if (temperature.getCurrTemperature() > temperature.getMax()){
+			sprinklerPanel.turnOnEastPanel();
+			sprinklerPanel.turnOnNorthPanel();
+			sprinklerPanel.turnOnSouthPanel();
+			sprinklerPanel.turnOnWestPanel();
+		}
+		
+		//temperature.addObserver(sprinklerPanel);
+		//temperature.startNotifying();
 		
 	}
 
@@ -421,7 +430,6 @@ public class HummingBirdUI {
 			temperature.setMin(temperature.getMin()-1);
 			minText.setText(String.valueOf(temperature.getMin()));
 		}
-
 	}
 
 	private class MinPlus implements ActionListener{
@@ -429,21 +437,53 @@ public class HummingBirdUI {
 			temperature.setMin(temperature.getMin()+1);
 			minText.setText(String.valueOf(temperature.getMin()));
 		}
-
 	}
 	
 	private class MaxMinus implements ActionListener{
 		public void actionPerformed(ActionEvent e) {
+			System.out.println("in max minus");
 			temperature.setMax(temperature.getMax()-1);
 			maxText.setText(String.valueOf(temperature.getMax()));
+			if (temperature.getCurrTemperature() > temperature.getMax()){
+				try {
+					sprinklerPanel.turnOnEastPanel();
+					sprinklerPanel.turnOnNorthPanel();
+					sprinklerPanel.turnOnSouthPanel();
+					sprinklerPanel.turnOnWestPanel();
+				} catch (MalformedURLException e1) {
+					e1.printStackTrace();
+				}
+			}
+			if (temperature.getCurrTemperature() <= temperature.getMax()){
+				sprinklerPanel.turnOffEastPanel();
+				sprinklerPanel.turnOffNorthPanel();
+				sprinklerPanel.turnOffSouthPanel();
+				sprinklerPanel.turnOffWestPanel();
+			}
 		}
-
 	}
 	
 	private class MaxPlus implements ActionListener{
 		public void actionPerformed(ActionEvent e) {
+			System.out.println("in max plus");
 			temperature.setMax(temperature.getMax()+1);
 			maxText.setText(String.valueOf(temperature.getMax()));
+			if (temperature.getCurrTemperature() >= temperature.getMax()){
+				try {
+					sprinklerPanel.turnOnEastPanel();
+					sprinklerPanel.turnOnNorthPanel();
+					sprinklerPanel.turnOnSouthPanel();
+					sprinklerPanel.turnOnWestPanel();
+				} catch (MalformedURLException e1) {
+					e1.printStackTrace();
+				}
+			}
+			if (temperature.getCurrTemperature() <= temperature.getMax()){
+				sprinklerPanel.turnOffEastPanel();
+				sprinklerPanel.turnOffNorthPanel();
+				sprinklerPanel.turnOffSouthPanel();
+				sprinklerPanel.turnOffWestPanel();
+			}
 		}
 	}
 	
@@ -529,7 +569,6 @@ public class HummingBirdUI {
 			
 		}
 	}
-	
 	
 	private class BgPanel extends JPanel {
 	    Image bg = new ImageIcon("./images/gardenCopy3.jpg").getImage();
