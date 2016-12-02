@@ -29,7 +29,7 @@ import project.graph.pkg.MonthlyBarchart;
 
 public class HummingBirdUI {
 
-	private JFrame frame;
+	JFrame frame;
 	private JPanel statisticsPanel, tempPanel;
 	private JRadioButton btnByMonth, btnByGroup;
 	private JLabel dayDate, lblondmd, lblTime, lblcurrTemp, lblcurrTemp2, min, minText, max, maxText;
@@ -54,6 +54,7 @@ public class HummingBirdUI {
 	private static String endTime = null;
 	private static String todayDate = null;
 	
+/*	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -63,6 +64,7 @@ public class HummingBirdUI {
 				} catch (Exception e) {
 					e.printStackTrace();
 	}}});}
+	*/
 	
 	public HummingBirdUI() throws ParseException, MalformedURLException {
 		temperature = new Temperature();
